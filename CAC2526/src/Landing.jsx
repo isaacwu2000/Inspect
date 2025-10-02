@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import googleLogo from '../public/google.svg';
 
 function Landing(){
     const navBar = (
@@ -15,6 +16,7 @@ function Landing(){
                 Learn to distinguish <u>truth</u> from disinformation
             </h1>
             <button>
+                <img src={googleLogo}></img>
                 Sign up with Google
             </button>
         </>
