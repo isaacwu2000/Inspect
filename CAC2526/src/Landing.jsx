@@ -1,0 +1,68 @@
+import React, {useState, useEffect} from 'react';
+
+function Landing(){
+    const navBar = (
+        <nav>
+            <a href="/">Inspect</a>
+            <button>Log in</button>
+            <button>Sign up</button>
+        </nav>
+    );
+
+    const hero = (
+        <>
+            <h1>
+            Learn to distinguish <u>truth</u> from disinformation
+            </h1>
+            <button>
+                Sign up with Google
+            </button>
+        </>
+    );
+
+    const mission = (
+        <>
+            <h1>Our Mission</h1>
+            <p>Combat disinformation...AI slop</p>
+        </>
+    );
+
+    const demo = (
+        <>
+            <h1>Demo</h1>
+            Put video here
+        </>
+    );
+
+    const about = (
+        <>
+            <h1>About</h1>
+            image of isaac
+            image of santi
+            how we got the idea...prove we're human
+        </>
+    );
+
+    const acknowledgements = (
+        <>
+            <h1>Acknowledgements</h1>
+            <p>
+                We'd like to thank the <a href="https://www.flintk12.com/">Flint</a> team for sponsoring the API credits for this project
+                Also, we'd like to thank...from <a href="https://themiltonpaper.com/">The Milton Paper</a> for allowing us to use their articles.
+                Additionally we'd like to thank the Congressional App Challenge team for...
+            </p>
+        </>
+    );
+
+    return(
+        <>
+            {navBar}
+            {hero}
+            {mission}
+            {demo}
+            {about}
+            {acknowledgements}
+        </>
+    );
+}
+export default Landing;
