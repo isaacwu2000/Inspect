@@ -7,7 +7,7 @@
     font-size: 20px;
 
     --textColor: #282828;
-    --accent: #20C0B0;
+    --accent: #1da99b;
     --highlight: #B4E7E2;
 }
 
@@ -38,7 +38,7 @@ nav {
     left: 0;
     right: 0;
     width: 100%;
-    background-color: white;
+    background-color: #efefef;
     border-bottom: 1.6px solid black;
     padding: 20px 48px 20px 48px;
 
@@ -67,3 +67,22 @@ nav {
     margin-right: 100px;
 }
 
+#valueProp u {
+    color: var(--accent);
+}
+
+#signUpWithGoogle {
+    display: flex;
+    align-items: center;
+
+    background: none;
+    font-size: 24px;
+    padding: 12px 16px 12px 16px;
+    border-radius: 20px;
+}
+
+#googleLogo {
+    width: 20px;
+    width: 20px;
+    margin-right: 8px;
+}

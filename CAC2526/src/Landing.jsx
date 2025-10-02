@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import googleLogo from '../public/google.svg';
+import bigEye from '../public/eye.png';
 
 function Landing(){
     const navBar = (
@@ -12,11 +13,14 @@ function Landing(){
 
     const hero = (
         <>
-            <h1 id="valueProp">
-                Learn to distinguish <u>truth</u> from disinformation
-            </h1>
-            <button>
-                <img src={googleLogo}></img>
+            <div id="banner">
+                <h1 id="valueProp">
+                    Learn to distinguish <u>truth</u> from disinformation
+                </h1>
+                <img src={bigEye}></img>
+            </div>
+            <button id="signUpWithGoogle">
+                <img id="googleLogo" src={googleLogo}></img>
                 Sign up with Google
             </button>
         </>
