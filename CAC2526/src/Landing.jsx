@@ -3,16 +3,16 @@ import React, {useState, useEffect} from 'react';
 function Landing(){
     const navBar = (
         <nav>
-            <a href="/">Inspect</a>
-            <button>Log in</button>
-            <button>Sign up</button>
+            <a href="/" className="logo">Inspect</a>
+            <button id="loginBtn">Log in</button>
+            <button id="signupBtnSmall">Sign up</button>
         </nav>
     );
 
     const hero = (
         <>
-            <h1>
-            Learn to distinguish <u>truth</u> from disinformation
+            <h1 id="valueProp">
+                Learn to distinguish <u>truth</u> from disinformation
             </h1>
             <button>
                 Sign up with Google
@@ -57,11 +57,13 @@ function Landing(){
     return(
         <>
             {navBar}
-            {hero}
-            {mission}
-            {demo}
-            {about}
-            {acknowledgements}
+            <main>
+                {hero}
+                {mission}
+                {demo}
+                {about}
+                {acknowledgements}
+            </main>
         </>
     );
 }

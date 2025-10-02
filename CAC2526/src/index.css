@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400&display=swap');
+
+:root {
+    color: #282828;
+    font-family: 'Lexend', sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+
+    --textColor: #282828;
+    --accent: #20C0B0;
+    --highlight: #B4E7E2;
+}
+
+body {
+    margin: 0px;
+    margin-bottom: 1000px;
+}
+
+main {
+    margin: 128px 48px 48px 48px;
+}
+
+button {
+    font-family: 'Lexend', sans-serif;
+    color: var(--textColor);
+    font-size: 20px;
+    transition: opacity 0.2s ease;
+}
+
+button:hover {
+    cursor: pointer;
+    opacity: 60%;
+}
+
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background-color: white;
+    border-bottom: 1.6px solid black;
+    padding: 20px 48px 20px 48px;
+
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    font-weight: 400;
+    color: var(--textColor);
+    text-decoration: none;
+    flex: auto;
+}
+
+#loginBtn {
+    background: none;
+    border: none;
+}
+
+#signupBtnSmall {
+    background: none;
+    border: 1px solid var(--textColor);
+    margin-left: 12px;
+    border-radius: 8px;
+    padding: 4px 12px 4px 12px;
+    margin-right: 100px;
+}
+
