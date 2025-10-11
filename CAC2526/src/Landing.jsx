@@ -4,10 +4,10 @@ import googleLogo from '/src/assets/google.svg';
 import { signOut, onAuthStateChanged, signInWithPopup } from './main.jsx';
 import { auth, provider } from './main.jsx';
 
-function Landing(){
+function Landing({ setIsLoggedIn }){
     function signInWithGoogle() {
         signInWithPopup(auth, provider);
-        console.log('test');
+        setIsLoggedIn(true);
     }
 
     const navBar = (
