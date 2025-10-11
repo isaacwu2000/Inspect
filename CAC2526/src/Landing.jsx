@@ -13,8 +13,8 @@ function Landing(){
     const navBar = (
         <nav>
             <a href="/" className="logo">Inspect</a>
-            <button id="loginBtn">Log in</button>
-            <button id="signupBtnSmall">Sign up</button>
+            <button onClick={signInWithGoogle} id="loginBtn">Log in</button>
+            <button onClick={signInWithGoogle} id="signupBtnSmall">Sign up</button>
         </nav>
     );
 // <EyeThin size = {180} stroke = {1.0} className = "eye-hero" />  add this later
@@ -79,4 +79,5 @@ function Landing(){
         </>
     );
 }
+
 export default Landing;
