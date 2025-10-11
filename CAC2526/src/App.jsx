@@ -6,7 +6,7 @@ import Playing from './Playing.jsx'
 import { auth, onAuthStateChanged } from './main.jsx'
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   return (
     <>

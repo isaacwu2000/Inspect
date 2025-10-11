@@ -17,7 +17,7 @@ function Landing({ setIsLoggedIn }){
             <button onClick={signInWithGoogle} id="signupBtnSmall">Sign up</button>
         </nav>
     );
-// <EyeThin size = {180} stroke = {1.0} className = "eye-hero" />  add this later
+// <EyeThin size = {180} stroke = {1.0} className = "eye-hero" />  TODO: add this later
     const hero = (
         <>
             <div id="banner">
