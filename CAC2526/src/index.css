@@ -53,6 +53,27 @@ nav {
     flex: auto;
 }
 
+/*SANTI STUFF (for eye mostly):*/
+#banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 24px 0;;
+}
+
+#valueProp {
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.1;
+    margin: 0;
+}
+.eye-hero {
+    display: block;
+    color: #111;
+}
+
+/*END SANTI STUFF*/
+
 #loginBtn {
     background: none;
     border: none;
