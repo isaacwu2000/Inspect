@@ -3,19 +3,21 @@ import googleLogo from '/src/assets/google.svg';
 import styles from './Playing.module.css'
 
 import { 
-    signOut, onAuthStateChanged, signInWithPopup, 
-    auth, provider,
-    collection, doc, addDoc, updateDoc, setDoc, getDoc, getDocs, query, where, orderBy, limit, serverTimestamp,
-    db
+    signOut, onAuthStateChanged, signInWithPopup, auth, provider, db,
+    collection, doc, addDoc, updateDoc, setDoc, getDoc, getDocs, query, where, orderBy, limit, serverTimestamp
 } from './main.jsx';
 
-function Playing({ setIsLoggedIn }){
-    function logOut() {
-        signOut(auth);
+function Playing({ setIsLoggedIn, user }){
+    async function logOut() {
+        await signOut(auth);
         setIsLoggedIn(false);
     }
 
-    function getNextChallenge() {
+    async function getNextChallenge() {
+        const querySnapshot = await getDocs(collection(db, "challenges"));
+        querySnapshot.forEach((doc) => {
+            console.log(`${doc.id} => ${doc.data()}`);
+        });
 
     }
 
@@ -60,6 +62,7 @@ function Playing({ setIsLoggedIn }){
         <>
             {navBar}
             <main>
+                <button onClick={getNextChallenge}>testing stuff</button>
                 {question}
                 {challenge}
                 {solution}

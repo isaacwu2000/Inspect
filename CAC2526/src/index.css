@@ -20,6 +20,10 @@ main {
     margin: 128px 48px 48px 48px;
 }
 
+::selection {
+  background: var(--highlight);
+}
+
 button {
     font-family: 'Lexend', sans-serif;
     color: var(--textColor);
@@ -51,5 +55,13 @@ nav {
     color: var(--textColor);
     text-decoration: none;
     flex: auto;
+}
+
+a {
+    color: var(--accent);
+}
+
+a:hover {
+    opacity: 60%;
 }
 
