@@ -12,13 +12,56 @@ function Playing({ setIsLoggedIn, user }){
         await signOut(auth);
         setIsLoggedIn(false);
     }
+    
+    async function createNewUser() {
+        await setDoc(doc(db, "users", user.uid), {
+            displayName: user.displayName,
+            email: user.email
+        });
+    }
 
-    async function getNextChallenge() {
-        const querySnapshot = await getDocs(collection(db, "challenges"));
+    async function ensureUserExists() {
+        const userRef = await doc(db, "users", user.uid);
+        const snap = await getDoc(userRef)
+        if (snap.exists()) {return snap.data();} 
+        else {createNewUser();}
+    }
+
+    async function getCompletedChallenges() {
+        await ensureUserExists();
+
+        let completedChallenges = [];
+        const completedChallengesRef = collection(db, "users", user.uid, "completedChallenges");
+        const querySnapshot = await getDocs(completedChallengesRef);
         querySnapshot.forEach((doc) => {
+            completedChallenges.push(doc.id);
             console.log(`${doc.id} => ${doc.data()}`);
         });
 
+        return completedChallenges;
+    }
+
+    async function getNextChallenge() {
+        const completedChallenges = await getCompletedChallenges();
+        const challengesRef = await collection(db, "challenges");
+        
+        // Firestore levels should be increasing for tutorials and a constant, higher number for freeplay
+        const q = await query(challengesRef, orderBy("level", "asc")); 
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            if (!completedChallenges.includes(doc.id)) {
+                console.log(doc.id);
+                return doc.id;
+            }
+        });
+        console.log(querySnapshot[0].id);
+        return querySnapshot[0].id; // If the user somehow has completed all challenges
+    }
+
+    async function updateCompletedChallenges() {
+        await ensureUserExists();
+        
+        const completedChallengesRef = collection(db, "users", user.uid, "completedChallenges");
     }
 
     const navBar = (
