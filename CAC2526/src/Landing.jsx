@@ -5,8 +5,8 @@ import { signOut, onAuthStateChanged, signInWithPopup } from './main.jsx';
 import { auth, provider } from './main.jsx';
 
 function Landing({ setIsLoggedIn }){
-    function signInWithGoogle() {
-        signInWithPopup(auth, provider);
+    async function signInWithGoogle() {
+        await signInWithPopup(auth, provider);
         setIsLoggedIn(true);
     }
 

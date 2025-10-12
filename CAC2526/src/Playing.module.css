@@ -1,7 +1,8 @@
 #signOutBtn {
     margin-right: 100px;
     border: none;
-    background: none
+    background: none;
+    font-weight: 300;
 }
 
 #question {

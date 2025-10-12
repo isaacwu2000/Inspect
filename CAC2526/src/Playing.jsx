@@ -2,13 +2,21 @@ import React, {useState, useEffect} from 'react';
 import googleLogo from '/src/assets/google.svg';
 import styles from './Playing.module.css'
 
-import { signOut, onAuthStateChanged, signInWithPopup } from './main.jsx';
-import { auth, provider } from './main.jsx';
+import { 
+    signOut, onAuthStateChanged, signInWithPopup, 
+    auth, provider,
+    collection, doc, addDoc, updateDoc, setDoc, getDoc, getDocs, query, where, orderBy, limit, serverTimestamp,
+    db
+} from './main.jsx';
 
 function Playing({ setIsLoggedIn }){
     function logOut() {
         signOut(auth);
         setIsLoggedIn(false);
+    }
+
+    function getNextChallenge() {
+
     }
 
     const navBar = (
