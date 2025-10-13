@@ -8,6 +8,8 @@ import {
 } from './main.jsx';
 
 function Playing({ setIsLoggedIn, user }){
+    const [currentChallengeId, setCurrentChallengeId] = useState();
+
     async function logOut() {
         await signOut(auth);
         setIsLoggedIn(false);
@@ -48,22 +50,71 @@ function Playing({ setIsLoggedIn, user }){
         // Firestore levels should be increasing for tutorials and a constant, higher number for freeplay
         const q = await query(challengesRef, orderBy("level", "asc")); 
         const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-            if (!completedChallenges.includes(doc.id)) {
-                console.log(doc.id);
-                return doc.id;
+
+        for (const doc of querySnapshot.docs) {
+            const id = doc.id;
+            if (!completedChallenges.includes(id)) {
+                console.log(id);
+                setCurrentChallengeId(id);
+                return id;
             }
-        });
-        console.log(querySnapshot[0].id);
-        return querySnapshot[0].id; // If the user somehow has completed all challenges
+        }
+
+        const challengeId = querySnapshot.docs[0].id; // TODO: make this a random doc
+        console.log(challengeId);
+        setCurrentChallengeId(challengeId);
+        return challengeId; // If the user somehow has completed all challenges
     }
 
     async function updateCompletedChallenges() {
         await ensureUserExists();
-        
+
         const completedChallengesRef = collection(db, "users", user.uid, "completedChallenges");
+        // TODO
+        // check if the user is correct or not
     }
 
+    // useEffect when currentChallengeId is changed, update the html
+    async function updateDisplayedChallenge() {
+        console.log(currentChallengeId); // i'm going crazy
+        const currentChallengeRef = doc(db, "challenges", currentChallengeId);
+        const currentChallengeSnapshot = await getDoc(currentChallengeRef);
+        const currentChallengeData = await currentChallengeSnapshot.data();
+        const optionTrueText = currentChallengeData.optionTrue;
+        const optionFalseText = currentChallengeData.optionFalse;
+        
+        console.log(currentChallengeData);
+
+        if (Math.random() > 0.5) {
+            document.getElementById("option1").innerHTML = optionTrueText;
+            document.getElementById("option2").innerHTML = optionFalseText;
+        } else {
+            document.getElementById("option1").innerHTML = optionFalseText;
+            document.getElementById("option2").innerHTML = optionTrueText;
+        }
+    }
+
+    async function nextChallenge() {
+        console.log(await getNextChallenge());
+        console.log(currentChallengeId);
+        await updateDisplayedChallenge();
+    }
+
+    useEffect(() => {
+        async function initChallenge() {
+            const challengeId = await getNextChallenge();
+            if (!currentChallengeId) {
+                console.log(challengeId);
+                await setCurrentChallengeId("test");
+                console.log(currentChallengeId);
+            }
+            console.log(currentChallengeId);
+            await updateDisplayedChallenge();
+            console.log(currentChallengeId);
+        }
+        initChallenge();
+    }, []); 
+    
     const navBar = (
         <nav>
             <a href="/" className="logo">Inspect</a>
@@ -83,13 +134,13 @@ function Playing({ setIsLoggedIn, user }){
     const challenge = (
         <div id={styles.challenge}>
             <div className={styles.challengeOption}>
-                <p className={styles.challengeText}>
+                <p id="option1" className={styles.challengeText}>
                     Pope Francis, the 266th Bishop of Rome and head of the Catholic Church, which has 1.4 billion worldwide followers, died on April 21 at age 88.
                 </p>
                 <button className={styles.challengeBtn}>This one!</button>
             </div>
             <div className={styles.challengeOption}>
-                <p className={styles.challengeText}>
+                <p id="option2" className={styles.challengeText}>
                     Pope Francis, the 266th Bishop of Rome and head of the Catholic Church, which has 1.4 billion worldwide followers, died on April 21 at age 88.
                 </p>
                 <button className={styles.challengeBtn}>No, this one!</button>
@@ -105,7 +156,7 @@ function Playing({ setIsLoggedIn, user }){
         <>
             {navBar}
             <main>
-                <button onClick={getNextChallenge}>testing stuff</button>
+                <button onClick={nextChallenge}>testing stuff</button>
                 {question}
                 {challenge}
                 {solution}
