@@ -8,7 +8,7 @@ function Landing({ setIsLoggedIn }){
     async function signInWithGoogle() {
         await signInWithPopup(auth, provider);
         setIsLoggedIn(true);
-    }//hi isaac
+    }//hi isaac wu
 
     const navBar = (
         <nav>
