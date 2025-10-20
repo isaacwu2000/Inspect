@@ -1,3 +1,7 @@
+body {
+    margin-bottom: -100px;
+}
+
 #signOutBtn {
     margin-right: 100px;
     border: none;
@@ -38,7 +42,7 @@
     align-items: center;
 
     padding: 12px 20px 20px 20px;
-    transition: all 0.1s ease;
+    transition: all 0.2s ease; /*was 0.1, but changed it to 0.1*/
 }
 
 .challengeOption:hover {
@@ -62,4 +66,11 @@
 
     margin-top: 12px;
     padding: 12px 32px 12px 32px;
+}
+
+body {
+  background: linear-gradient(to top, #e6eaed 0%, #ffffff 27.5%);
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Lexend', sans-serif;
 }

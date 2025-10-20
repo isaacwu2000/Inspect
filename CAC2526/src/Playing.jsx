@@ -76,6 +76,7 @@ function Playing({ setIsLoggedIn, user }){
 
     // useEffect when currentChallengeId is changed, update the html
     async function updateDisplayedChallenge() {
+        if (!currentChallengeId) return;
         console.log(currentChallengeId); // i'm going crazy
         const currentChallengeRef = doc(db, "challenges", currentChallengeId);
         const currentChallengeSnapshot = await getDoc(currentChallengeRef);
@@ -99,7 +100,7 @@ function Playing({ setIsLoggedIn, user }){
         console.log(currentChallengeId);
         await updateDisplayedChallenge();
     }
-
+    /*
     useEffect(() => {
         async function initChallenge() {
             const challengeId = await getNextChallenge();
@@ -114,6 +115,16 @@ function Playing({ setIsLoggedIn, user }){
         }
         initChallenge();
     }, []); 
+    */
+    useEffect(() => {
+        async function initChallenge() {
+            await getNextChallenge();
+        }
+        initChallenge();
+    }, []);
+    useEffect(() => {
+        updateDisplayedChallenge();
+    }, [currentChallengeId]);
     
     const navBar = (
         <nav>
@@ -122,7 +133,7 @@ function Playing({ setIsLoggedIn, user }){
         </nav>
     );
 
-    // <EyeThin size = {180} stroke = {1.0} className = "eye-hero" />  TODO: add this later
+    //<EyeThin size = {180} stroke = {1.0} className = "eye-hero" /> TODO: add this later
     // TODO: make level adapt
     const question = (
         <div id={styles.question}>
@@ -135,13 +146,13 @@ function Playing({ setIsLoggedIn, user }){
         <div id={styles.challenge}>
             <div className={styles.challengeOption}>
                 <p id="option1" className={styles.challengeText}>
-                    Pope Francis, the 266th Bishop of Rome and head of the Catholic Church, which has 1.4 billion worldwide followers, died on April 21 at age 88.
+                    
                 </p>
                 <button className={styles.challengeBtn}>This one!</button>
             </div>
             <div className={styles.challengeOption}>
                 <p id="option2" className={styles.challengeText}>
-                    Pope Francis, the 266th Bishop of Rome and head of the Catholic Church, which has 1.4 billion worldwide followers, died on April 21 at age 88.
+                    
                 </p>
                 <button className={styles.challengeBtn}>No, this one!</button>
             </div>
