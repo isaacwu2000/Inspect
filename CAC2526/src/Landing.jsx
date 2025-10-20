@@ -8,15 +8,16 @@ function Landing({ setIsLoggedIn }){
     async function signInWithGoogle() {
         await signInWithPopup(auth, provider);
         setIsLoggedIn(true);
-    }
+    }//hi isaac
 
     const navBar = (
         <nav>
             <a href="/" className="logo">Inspect</a>
-            <button onClick={signInWithGoogle} id="loginBtn">Log in</button>
-            <button onClick={signInWithGoogle} id="signupBtnSmall">Sign up</button>
+            <button onClick={signInWithGoogle} id="loginBtn">Log In</button>
+            <button onClick={signInWithGoogle} id="signupBtnSmall">Sign Up</button> 
+    
         </nav>
-    );
+    );//In was lowercase and up was lowercase before
 // <EyeThin size = {180} stroke = {1.0} className = "eye-hero" />  TODO: add this later
     const hero = (
         <>
