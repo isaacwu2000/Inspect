@@ -1,0 +1,97 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    z-index: 1000;
+    width: 100%;
+    background-color: rgba(239,239,239,0.8);
+    backdrop-filter: blur(8px);
+
+    border-bottom: 1.6px solid black;
+
+    /*Santi: removed flex because it was causing issues with the items clipping off on the right side of the screen*/
+    padding: 16px 0;
+}
+
+/*Santo: centers and constrains items to the center of the navbar:*/
+.navbarInner {
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    /*Santi: Allow wrapping for smaller screens only: */
+    flex-wrap: wrap;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--textColor);
+    font-weight: 400;
+    font-size: 20px;
+
+    /*Santi: take leftover space so buttons sit to the right*/
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.brandText {
+    line-height: 1;
+}
+
+.navActions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    flex: 0 0 auto;
+
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    text-align: right;
+    max-width: 100%;
+}
+
+.navBtn {
+    background: none;
+    border: none;
+    font-family: 'Lexend', sans-serif;
+    font-size: 16px;
+    color: var(--textColor);
+    border-radius: 8px;
+    padding: 4px 12px;
+    transition: opacity 0.2s ease;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.navBtn.outlined {
+    border: 1px solid var(--textColor);
+}
+
+.navBtn:hover {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.navLink {
+    font-size: 16px;
+    text-decoration: none;
+    color: var(--accent);
+    transition: opacity 0.2s ease;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.navLink:hover {
+    opacity: 0.6;
+}
