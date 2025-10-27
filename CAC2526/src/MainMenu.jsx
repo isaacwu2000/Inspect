@@ -32,7 +32,7 @@ function MainMenu({ user }) {
                             </h2>
                             <p style={{margin:0, fontSize:'16px', lineHeight:1.4}}>
                                 You recive two short statements. One is real, one is fake.
-                                You must pick the lie in order to train your "AI-dar.""
+                                You must pick the lie in order to train your "AI-dar."
                             </p>
                         </div>
                     </Link>
