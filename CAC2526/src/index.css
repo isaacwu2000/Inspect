@@ -1,60 +1,60 @@
+/* index.css */
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400&display=swap');
 
 :root {
-    color: #282828;
-    font-family: 'Lexend', sans-serif;
-    font-weight: 300;
-    font-size: 20px;
-
     --textColor: #282828;
     --accent: #1da99b;
     --highlight: #B4E7E2;
+
+    color: var(--textColor);
+    font-family: 'Lexend', sans-serif;
+    font-weight: 300;
+    font-size: 20px;
 }
 
 body {
-    margin: 0px;
-    margin-bottom: 100px;
-}
-
-main {
-    margin: 128px 48px 48px 48px;
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(to top, #e6eaed 0%, #ffffff 27.5%);
+    color: var(--textColor);
+    -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: var(--highlight);
+    background: var(--highlight);
 }
 
+/* shared <main> wrapper for pages */
+main {
+    max-width: 900px;
+    margin: 128px auto 64px auto; /* leaves room for fixed navbar */
+    padding: 0 24px 48px 24px;
+}
+
+/* typography helpers */
+h1 {
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+u {
+    text-decoration-color: var(--accent);
+    text-underline-offset: 3px;
+}
+
+/* generic button fallback */
 button {
     font-family: 'Lexend', sans-serif;
     color: var(--textColor);
-    font-size: 20px;
+    font-size: 18px;
+    background: none;
+    border: none;
     transition: opacity 0.2s ease;
 }
 
 button:hover {
     cursor: pointer;
-    opacity: 60%;
-}
-
-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    background-color: #efefef;
-    border-bottom: 1.6px solid black;
-    padding: 20px 48px 20px 48px;
-
-    display: flex;
-    align-items: center;
-}
-
-.logo {
-    font-weight: 400;
-    color: var(--textColor);
-    text-decoration: none;
-    flex: auto;
+    opacity: 0.6;
 }
 
 a {
@@ -62,6 +62,5 @@ a {
 }
 
 a:hover {
-    opacity: 60%;
+    opacity: 0.6;
 }
-
