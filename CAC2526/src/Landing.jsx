@@ -1,35 +1,36 @@
-import React, {useState, useEffect} from 'react';
+// Landing.jsx
+import React from 'react';
 import googleLogo from '/src/assets/google.svg';
+import NavBar from './NavBar.jsx';
+import EyeLogo from './EyeLogo.jsx';
 
-import { signOut, onAuthStateChanged, signInWithPopup } from './main.jsx';
-import { auth, provider } from './main.jsx';
-
-function Landing({ setIsLoggedIn }){
-    async function signInWithGoogle() {
-        await signInWithPopup(auth, provider);
-        setIsLoggedIn(true);
-    }//hi isaac
-
-    const navBar = (
-        <nav>
-            <a href="/" className="logo">Inspect</a>
-            <button onClick={signInWithGoogle} id="loginBtn">Log In</button>
-            <button onClick={signInWithGoogle} id="signupBtnSmall">Sign Up</button> 
-    
-        </nav>
-    );//In was lowercase and up was lowercase before
-// <EyeThin size = {180} stroke = {1.0} className = "eye-hero" />  TODO: add this later
+function Landing(){
     const hero = (
         <>
-            <div id="banner">
-                <h1 id="valueProp">
+            <div id="banner" style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '24px',
+                padding: '24px 0'
+            }}>
+                <h1 id="valueProp" style={{
+                    fontSize: 'clamp(28px,4vw,44px)',
+                    lineHeight: '1.1',
+                    margin: 0,
+                    flex: 1
+                }}>
                     Learn to distinguish <u>truth</u> from disinformation
-                </h1>    
+                </h1>
+                <EyeLogo size={64} className="eye-hero" />
             </div>
-            <button onClick={signInWithGoogle} id="signUpWithGoogle">
-                <img id="googleLogo" src={googleLogo}></img>
-                Sign up with Google
-            </button>
+
+            <div style={{display:'flex',alignItems:'center',gap:'12px',flexWrap:'wrap'}}>
+                <img id="googleLogo" src={googleLogo} style={{width:'24px',height:'24px'}}/>
+                <p style={{margin:0,fontSize:'18px',opacity:'0.8'}}>
+                    Sign in with Google in the top right to start practicing.
+                </p>
+            </div>
         </>
     );
 
@@ -37,10 +38,9 @@ function Landing({ setIsLoggedIn }){
         <>
             <h1>Our Mission</h1>
             <p>
-                Disinformation, partialy from AI slop, has taken over the internet.
-                It has the power to change elections and your opinions.
-                We hope to allow you to quickly <u>discern truth from falsehood</u> with a little bit of practice. 
-                Then, as you continue scrolling you won't be fooled as easily.
+                Disinformation — a lot of it AI slop — is everywhere.
+                It can warp elections, public health decisions, and even how you see your friends.
+                We want you to build fast instincts so you can <u>spot lies instantly</u> while scrolling.
             </p>
         </>
     );
@@ -48,19 +48,25 @@ function Landing({ setIsLoggedIn }){
     const demo = (
         <>
             <h1>Demo</h1>
-            Put video here
+            <p style={{opacity:0.7}}>
+                (Demo video placeholder)
+            </p>
         </>
     );
 
     const about = (
         <>
             <h1>About</h1>
-            image of isaac
-            image of santi
-            how we got the idea...prove we're human
+            <p style={{marginTop:0}}>
+                • Isaac (human)  
+                • Santi (also human)  
+                We built this because we’re watching people get fooled in real time.
+            </p>
 
             <h2>Contact</h2>
-            Contact us at...
+            <p style={{marginTop:0}}>
+                Reach out at contact@example.com.
+            </p>
         </>
     );
 
@@ -69,20 +75,18 @@ function Landing({ setIsLoggedIn }){
             <h1>Acknowledgements</h1>
             <p>
                 We'd like to thank the <a target="_blank" href="https://www.flintk12.com/">Flint</a> team
-                for sponsoring the API credits for this project.
-                Also, we'd like to thank Rhys Adams, Harris Felix, Victoria Kirkham, Haotong Xue, and Joanna Zhang 
-                (as well as another anonymous writer) from <a target="_blank" href="https://themiltonpaper.com/">The Milton Paper</a> for
-                allowing us to use their articles.
-                Additionally, we'd like to thank
-                the <a target="_blank" href="https://www.congressionalappchallenge.us/">Congressional App Challenge</a> for
-                organizing the challenge which motivated the development of this app.
+                for sponsoring API credits.
+                We’d also like to thank writers from <a target="_blank" href="https://themiltonpaper.com/">The Milton Paper</a>
+                for letting us use their articles, and the 
+                <a target="_blank" href="https://www.congressionalappchallenge.us/"> Congressional App Challenge</a>
+                for motivating us to build this.
             </p>
         </>
     );
 
     return(
         <>
-            {navBar}
+            <NavBar mode="public" />
             <main>
                 {hero}
                 {mission}
