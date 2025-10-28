@@ -3,34 +3,27 @@ import React from 'react';
 import googleLogo from '/src/assets/google.svg';
 import NavBar from './NavBar.jsx';
 import EyeLogo from './EyeLogo.jsx';
+import { signInWithPopup, signOut, auth, provider } from './main.jsx';
+import styles from './Landing.module.css';
 
 function Landing(){
+    async function handleSignIn() {
+        await signInWithPopup(auth, provider);
+    }
+
     const hero = (
         <>
-            <div id="banner" style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '24px',
-                padding: '24px 0'
-            }}>
-                <h1 id="valueProp" style={{
-                    fontSize: 'clamp(28px,4vw,44px)',
-                    lineHeight: '1.1',
-                    margin: 0,
-                    flex: 1
-                }}>
+            <div id={styles.banner}>
+                <h1 id={styles.valueProp}>
                     Learn to distinguish <u>truth</u> from disinformation
                 </h1>
-                <EyeLogo size={64} className="eye-hero" />
+                <EyeLogo size={128} className="eye-hero" />
             </div>
 
-            <div style={{display:'flex',alignItems:'center',gap:'12px',flexWrap:'wrap'}}>
-                <img id="googleLogo" src={googleLogo} style={{width:'24px',height:'24px'}}/>
-                <p style={{margin:0,fontSize:'18px',opacity:'0.8'}}>
-                    Sign in with Google in the top right to start practicing.
-                </p>
-            </div>
+            <button onClick={handleSignIn} id={styles.signInBtnBig}>
+                <img id={styles.googleLogo} src={googleLogo}/>
+                <p>Sign in with Google</p>
+            </button>
         </>
     );
 
@@ -48,7 +41,7 @@ function Landing(){
     const demo = (
         <>
             <h1>Demo</h1>
-            <p style={{opacity:0.7}}>
+            <p>
                 (Demo video placeholder)
             </p>
         </>
@@ -57,15 +50,10 @@ function Landing(){
     const about = (
         <>
             <h1>About</h1>
-            <p style={{marginTop:0}}>
+            <p>
                 • Isaac (human)  
                 • Santi (also human)  
                 We built this because we’re watching people get fooled in real time.
-            </p>
-
-            <h2>Contact</h2>
-            <p style={{marginTop:0}}>
-                Reach out at contact@example.com.
             </p>
         </>
     );

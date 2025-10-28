@@ -1,0 +1,44 @@
+#banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 24px 0px 0px 0px;
+}
+
+#valueProp {
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: '1.1';
+    margin: 0;
+    flex: 1;
+    text-wrap: 20%; /* todo */
+}
+
+#signInBtnBig {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--textColor);
+    border-radius: 24px;
+    padding: 8px 24px 8px 24px;
+    margin-top: 24px;
+    transition: 
+        box-shadow 0.15s ease,
+        transform 0.15s ease;
+}
+
+#googleLogo {
+    width: 20px;
+    height: 20px;
+}
+
+#signInBtnBig p {
+    margin: 0px 0px 0px 12px;
+    font-size: 20px;
+    color: var(--textColor);
+}
+
+#signInBtnBig:hover {
+    box-shadow: 2px 2px 1px var(--highlight);
+    box-shadow: 2px 2px 0px var(--accent);
+    transform: translate(-2px, -2px);
+}
