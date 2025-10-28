@@ -92,11 +92,15 @@ function TwoChoiceGame({ user }){
     function handleAnswer(idx) {
         setSelectedIdx(idx);
         const correct = (idx === falseIndex);
-        setFeedback(correct ? "Correct ✅ That one was the fake." : "Not quite ❌ The other one was fake.");
+        setFeedback(correct ? "Correct!" : "Not quite. Try again");
     }
 
     async function handleNext() {
         await pickNextChallenge();
+    }
+
+    async function updateCompletedChallenges() {
+        //TODO
     }
 
     const levelText = challengeData?.level != null ? `Level ${challengeData.level}` : "Level ?";
@@ -106,7 +110,7 @@ function TwoChoiceGame({ user }){
             <NavBar mode="authed" />
             <main>
                 <div className={styles.question}>
-                    <h1 className={styles.questionStatement}>Which one is false?</h1>
+                    <h1 className={styles.questionStatement}>Which one is false / more extreme?</h1>
                     <p className={styles.questionLevel}>{levelText}</p>
                 </div>
 
@@ -118,9 +122,9 @@ function TwoChoiceGame({ user }){
                             extraClass = (idx === falseIndex) ? styles.selectedCorrect : styles.selectedWrong;
                         }
                         return (
-                            <div key={idx} className={`${styles.challengeOption} ${extraClass}`}>
+                            <div key={idx} className={`${styles.challengeOption} ${extraClass}`} onClick={() => handleAnswer(idx)}>
                                 <p className={styles.challengeText}>{optText}</p>
-                                <button className={styles.challengeBtn} onClick={() => handleAnswer(idx)}>
+                                <button className={styles.challengeBtn}>
                                     {idx === 0 ? "This one!" : "No, this one!"}
                                 </button>
                             </div>
@@ -131,7 +135,7 @@ function TwoChoiceGame({ user }){
                 <div className={styles.feedback}>
                     {feedback && <div>{feedback}</div>}
                     {feedback && (
-                        <button className={styles.nextBtn} onClick={handleNext}>Continue →</button>
+                        <button className={styles.nextBtn} onClick={() => handleNext()}>Continue →</button>
                     )}
                 </div>
             </main>
