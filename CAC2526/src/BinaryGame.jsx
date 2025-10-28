@@ -24,7 +24,6 @@ function BinaryGame({ user }) {
         const blob = await getBlob(videoRef);
         const video = document.getElementById("videoPlayer");
         video.src = URL.createObjectURL(blob);
-        video.play();
     }
 
     async function loadChallenge() {
