@@ -92,6 +92,7 @@
     transition: opacity 0.2s ease;
     line-height: 1.2;
     white-space: nowrap;
+    font-weight: 400;
 }
 
 .navLink:hover {

@@ -2,22 +2,16 @@ import React, {useState, useEffect} from 'react';
 import styles from './Game.module.css';
 import NavBar from './NavBar.jsx';
 
-import { 
-    auth, db,
-    signOut,
-    collection, doc, setDoc, getDoc, getDocs, query, orderBy
-} from './main.jsx';
+import { auth, db, signOut, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy } from './main.jsx';
 
 function TwoChoiceGame({ user }){
     const [currentChallengeId, setCurrentChallengeId] = useState(null);
     const [challengeData, setChallengeData] = useState(null);
-
     const [options, setOptions] = useState([]); //[textA, textB]
     const [falseIndex, setFalseIndex] = useState(null); //Santi: index of the FALSE statement
     const [selectedIdx, setSelectedIdx] = useState(null);
     const [feedback, setFeedback] = useState("");
 
-   
     async function ensureUserExists() {
         const userRef = doc(db, "users", user.uid);
         const snap = await getDoc(userRef);
@@ -44,17 +38,17 @@ function TwoChoiceGame({ user }){
         // get next unseen challenge (or fallback first)
         const completed = await getCompletedChallenges();
         const challengesRef = collection(db, "challenges");
-        const qChallenges = query(challengesRef, orderBy("level", "asc"));
+        const qChallenges = query(challengesRef, orderBy("level", "asc"), where("level", "==", 67));
         const qSnap = await getDocs(qChallenges);
 
         let chosenDoc = qSnap.docs.find(d => !completed.includes(d.id));
+        console.log(chosenDoc.data());
         if (!chosenDoc) {
-            //Santi fallback option: just take first doc
+            // Santi fallback option: just take first doc
             chosenDoc = qSnap.docs[0];
         }
-
         if (!chosenDoc) {
-            //If Isaac forgot to put more challenges: (hopefully not)
+            // If Isaac forgot to put more challenges: (hopefully not)
             setCurrentChallengeId(null);
             setChallengeData(null);
             return;
@@ -124,17 +118,9 @@ function TwoChoiceGame({ user }){
                             extraClass = (idx === falseIndex) ? styles.selectedCorrect : styles.selectedWrong;
                         }
                         return (
-                            <div 
-                                key={idx} 
-                                className={`${styles.challengeOption} ${extraClass}`}
-                            >
-                                <p className={styles.challengeText}>
-                                    {optText}
-                                </p>
-                                <button 
-                                    className={styles.challengeBtn}
-                                    onClick={() => handleAnswer(idx)}
-                                >
+                            <div key={idx} className={`${styles.challengeOption} ${extraClass}`}>
+                                <p className={styles.challengeText}>{optText}</p>
+                                <button className={styles.challengeBtn} onClick={() => handleAnswer(idx)}>
                                     {idx === 0 ? "This one!" : "No, this one!"}
                                 </button>
                             </div>
@@ -145,9 +131,7 @@ function TwoChoiceGame({ user }){
                 <div className={styles.feedback}>
                     {feedback && <div>{feedback}</div>}
                     {feedback && (
-                        <button className={styles.nextBtn} onClick={handleNext}>
-                            Next question →
-                        </button>
+                        <button className={styles.nextBtn} onClick={handleNext}>Continue →</button>
                     )}
                 </div>
             </main>

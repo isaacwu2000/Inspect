@@ -6,7 +6,7 @@ import { db, storage, ref, getBlob, collection, getDocs, query, orderBy } from '
 
 function BinaryGame({ user }) {
     const [currentChallengeData, setCurrentChallengeData] = useState(null);
-    const [currentChallengeRef, setCurrentChallengeRef] = useState(null);
+    const [currentChallengeId, setCurrentChallengeId] = useState(null);
     const [feedback, setFeedback] = useState("");
 
     async function getCompletedChallenges() {
@@ -39,7 +39,7 @@ function BinaryGame({ user }) {
         console.log(challengeData);
         loadVideo(challengeData.videoURL);
         setCurrentChallengeData(challengeData);
-        setCurrentChallengeRef(challengeSnap.ref);
+        setCurrentChallengeId(challengeSnap.id);
         setFeedback("");
     }
 
@@ -65,7 +65,7 @@ function BinaryGame({ user }) {
 
                 <div className={styles.singleCardWrapper}>
                     <div className={styles.singleCard}>
-                        <video id="videoPlayer"></video>
+                        <video id="videoPlayer" controls loop></video>
                         <p className={styles.singlePrompt}>
                             {currentChallengeData?.text != null ? currentChallengeData.text : "No challenge available."}
                         </p>
