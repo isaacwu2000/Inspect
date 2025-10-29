@@ -134,7 +134,7 @@ function TwoChoiceGame({ user }){
                 <div className={styles.question}>
                     <h1 className={styles.questionStatement}>Which one is false / more extreme?</h1>
                     <p className={styles.questionLevel}>
-                        {challengeData?.level != null ? `Level ${challengeData.level}` : "Level ?"}
+                        Level 3
                     </p>
                 </div>
 

@@ -1,7 +1,3 @@
-.wrapper {
-    /*not needed for now ig*/
-}
-
 .question {
     display: flex;
     flex-direction: column;
