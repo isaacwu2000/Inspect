@@ -24,7 +24,7 @@ function Landing(){
                     </p>
                 </div>
                 
-                <EyeLogo size={142} className="eye-hero" />
+                 <EyeLogo size={64} className="eye-hero" animated={true} />
             </div>
 
             <button onClick={handleSignIn} id={styles.signInBtnBig}>
@@ -86,9 +86,9 @@ function Landing(){
             <main>
                 {hero}
                 {mission}
-                {demo}
                 {about}
                 {acknowledgements}
+                {demo}
             </main>
         </>
     );

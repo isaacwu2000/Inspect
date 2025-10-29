@@ -24,7 +24,7 @@ function MainMenu({ user }) {
                                 True or False?
                             </h2>
                             <p style={{margin:0, fontSize:'16px', lineHeight:1.4}}>
-                                You get one short piece of content. You must decide whether it's 
+                                You must decide whether a piece of content
                                 disinformation or factually correct.
                             </p>
                         </div>

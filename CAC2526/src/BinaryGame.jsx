@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import styles from './Game.module.css';
 import NavBar from './NavBar.jsx';
+import EyeLogo from './EyeLogo.jsx';
 
 import { db, storage, ref, getBlob, collection, getDocs, query, orderBy } from './main.jsx';
 
@@ -65,6 +66,7 @@ function BinaryGame({ user }) {
                     <p className={styles.questionLevel}>
                         {currentChallengeData?.level != null ? `Level ${currentChallengeData.level}` : "Level ?"}
                     </p>
+                    <EyeLogo size={64} className="eye-hero" animated={true} />
                 </div>
 
                 <div className={`${styles.singleCardWrapper} ${highlightStyle}`}>

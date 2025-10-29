@@ -21,7 +21,7 @@ function NavBar({ mode }) {
           to={mode === "public" ? "/" : "/menu"} 
           className="brand"
         >
-          <EyeLogo size={24} />
+           <EyeLogo size={24} className="eye-hero" animated={true} />
           <span className="brandText">Inspect</span>
         </Link>
 

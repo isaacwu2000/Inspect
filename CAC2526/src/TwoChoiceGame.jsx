@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import styles from './Game.module.css';
 import NavBar from './NavBar.jsx';
-
+import EyeLogo from './EyeLogo.jsx';
 import { auth, db, signOut, storage, ref, getBlob, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy } from './main.jsx';
 
 function TwoChoiceGame({ user }){
@@ -136,6 +136,7 @@ function TwoChoiceGame({ user }){
                     <p className={styles.questionLevel}>
                         Level 3
                     </p>
+                    <EyeLogo size={64} className="eye-hero" animated={true} />
                 </div>
 
                 <div className={styles.challengeGrid}>
