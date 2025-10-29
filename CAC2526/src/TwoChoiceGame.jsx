@@ -64,7 +64,7 @@ function TwoChoiceGame({ user }){
         const qSnap = await getDocs(qChallenges);
 
         let chosenDoc = qSnap.docs.find(d => !completed.includes(d.id));
-        console.log(chosenDoc.data());
+        
         if (!chosenDoc) {
             // Santi fallback option: just take first doc
             chosenDoc = qSnap.docs[0];
@@ -76,6 +76,7 @@ function TwoChoiceGame({ user }){
             return;
         }
 
+        console.log(chosenDoc.data());
         setCurrentChallengeId(chosenDoc.id);
         setChallengeData(chosenDoc.data());
         setSelectedIdx(null);
@@ -116,6 +117,7 @@ function TwoChoiceGame({ user }){
     function handleAnswer(idx) {
         setSelectedIdx(idx);
         const correct = (idx === falseIndex);
+        updateCompletedChallenges(correct);
         setFeedback(correct ? "Correct!" : "Not quite. Try again");
     }
 
@@ -123,8 +125,12 @@ function TwoChoiceGame({ user }){
         await pickNextChallenge();
     }
 
-    async function updateCompletedChallenges() {
-        //TODO
+    async function updateCompletedChallenges(wasCorrect = true) {
+        await setDoc(doc(db, "users", user.uid, "completedChallenges", currentChallengeId),{
+            challengeLevel: challengeData.level,
+            wasCorrect: wasCorrect
+        });
+        return true;
     }
 
     return (

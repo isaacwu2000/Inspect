@@ -3,7 +3,7 @@ import styles from './Game.module.css';
 import NavBar from './NavBar.jsx';
 import EyeLogo from './EyeLogo.jsx';
 
-import { db, storage, ref, getBlob, collection, getDocs, query, orderBy } from './main.jsx';
+import { db, storage, ref, getBlob, doc, getDoc, setDoc, collection, getDocs, query, orderBy, where } from './main.jsx';
 
 function BinaryGame({ user }) {
     const [currentChallengeData, setCurrentChallengeData] = useState(null);
@@ -11,12 +11,34 @@ function BinaryGame({ user }) {
     const [feedback, setFeedback] = useState("");
     const [highlightStyle, setHighlightStyle] = useState("");
 
-    async function getCompletedChallenges() {
-        //TODO
+    async function ensureUserExists() {
+        const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+        if (!snap.exists()) {
+            await setDoc(userRef, {
+                displayName: user.displayName,
+                email: user.email
+            });
+        }
     }
 
-    async function updateCompletedChallenges() {
-        // TODO
+    async function getCompletedChallenges() {
+        await ensureUserExists();
+        const completed = [];
+        const completedRef = collection(db, "users", user.uid, "completedChallenges");
+        const completedSnap = await getDocs(completedRef);
+        completedSnap.forEach((d) => {
+            completed.push(d.id);
+        });
+        return completed;
+    }
+
+    async function updateCompletedChallenges(wasCorrect = true) {
+        await setDoc(doc(db, "users", user.uid, "completedChallenges", currentChallengeId),{
+            challengeLevel: currentChallengeData.level,
+            wasCorrect: wasCorrect
+        });
+        return true;
     }
 
     async function loadVideo(videoURL) {
@@ -32,12 +54,19 @@ function BinaryGame({ user }) {
         setHighlightStyle("");
 
         const challengesRef = await collection(db, "challenges");
-        const qChallenges = await query(challengesRef, orderBy("level","asc"));
+        const qChallenges = await query(challengesRef, orderBy("level", "asc"), where("level", "!=", 67));
         const snap = await getDocs(qChallenges);
         if (snap.empty) {setChallenge(null); return;}
         // TODO: implement getCompletedChallengers() here
+        
+        const completed = await getCompletedChallenges();
+        let challengeSnap = snap.docs.find(d => !completed.includes(d.id));
+        console.log(challengeSnap.data());
+        if (!challengeSnap) {
+            // Santi fallback option: just take first doc
+            challengeSnap = snap.docs[0];
+        }
 
-        const challengeSnap = snap.docs[0];
         const challengeData = challengeSnap.data();
         console.log(challengeData);
         loadVideo(challengeData.videoURL);
@@ -52,6 +81,7 @@ function BinaryGame({ user }) {
         if (!currentChallengeData) return;
 
         const correct = (guessIsReal === currentChallengeData.factual);
+        updateCompletedChallenges(correct);
         setFeedback(correct ? "Correct!" : `Nope. The answer was ${currentChallengeData.factual}`); //use emojis to give ppl dopamine or punish their naughty behavior
         console.log(correct ? "Correct!" : `Nope. The answer was ${currentChallengeData.factual}`);
         setHighlightStyle(correct ? styles.selectedCorrect : styles.selectedWrong);
