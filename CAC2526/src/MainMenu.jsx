@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import NavBar from './NavBar.jsx';
+import styles from './MainMenu.module.css';
 
 function MainMenu({ user }) {
     return (
@@ -18,14 +19,7 @@ function MainMenu({ user }) {
                     marginTop:'32px'
                 }}>
                     <Link to="/game/binary" style={{textDecoration:'none', color:'inherit'}}>
-                        <div style={{
-                            border:'1px solid black',
-                            borderRadius:'20px',
-                            boxShadow:'0px 1px 1.6px #2c2c2c',
-                            padding:'20px',
-                            background:'#fff',
-                            transition:'all 0.2s ease'
-                        }}>
+                        <div className={styles.card}>
                             <h2 style={{marginTop:0, marginBottom:'8px', lineHeight:1.2}}>
                                 True or False?
                             </h2>
@@ -36,14 +30,7 @@ function MainMenu({ user }) {
                         </div>
                     </Link>
                     <Link to="/game/twochoice" style={{textDecoration:'none', color:'inherit'}}>
-                        <div style={{
-                            border:'1px solid black',
-                            borderRadius:'20px',
-                            boxShadow:'0px 1px 1.6px #2c2c2c',
-                            padding:'20px',
-                            background:'#fff',
-                            transition:'all 0.2s ease'
-                        }}>
+                        <div className={styles.card}>
                             <h2 style={{marginTop:0, marginBottom:'8px', lineHeight:1.2}}>
                                 Which one?
                             </h2>

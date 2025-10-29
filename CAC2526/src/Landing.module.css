@@ -1,3 +1,7 @@
+main {
+    margin: 84px 40px;
+}
+
 #banner {
     display: flex;
     align-items: center;
@@ -7,11 +11,14 @@
 }
 
 #valueProp {
-    font-size: clamp(28px, 4vw, 44px);
-    line-height: '1.1';
     margin: 0;
     flex: 1;
-    text-wrap: 20%; /* todo */
+    text-wrap: wrap;
+}
+
+#subtitleProp {
+    text-wrap: wrap;
+    width: 80%;
 }
 
 #signInBtnBig {
@@ -20,7 +27,8 @@
     border: 1px solid var(--textColor);
     border-radius: 24px;
     padding: 8px 24px 8px 24px;
-    margin-top: 24px;
+    margin-top: 12px;
+    margin-bottom: 64px;
     transition: 
         box-shadow 0.15s ease,
         transform 0.15s ease;
