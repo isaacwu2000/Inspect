@@ -5,6 +5,7 @@
     --textColor: #282828;
     --accent: #1da99b;
     --highlight: #B4E7E2;
+    --darkAccent: #106159;
 
     color: var(--textColor);
     font-family: 'Lexend', sans-serif;

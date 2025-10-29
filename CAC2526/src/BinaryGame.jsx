@@ -8,6 +8,7 @@ function BinaryGame({ user }) {
     const [currentChallengeData, setCurrentChallengeData] = useState(null);
     const [currentChallengeId, setCurrentChallengeId] = useState(null);
     const [feedback, setFeedback] = useState("");
+    const [highlightStyle, setHighlightStyle] = useState("");
 
     async function getCompletedChallenges() {
         //TODO
@@ -27,6 +28,8 @@ function BinaryGame({ user }) {
     }
 
     async function loadChallenge() {
+        setHighlightStyle("");
+
         const challengesRef = await collection(db, "challenges");
         const qChallenges = await query(challengesRef, orderBy("level","asc"));
         const snap = await getDocs(qChallenges);
@@ -49,6 +52,8 @@ function BinaryGame({ user }) {
 
         const correct = (guessIsReal === currentChallengeData.factual);
         setFeedback(correct ? "Correct!" : `Nope. The answer was ${currentChallengeData.factual}`); //use emojis to give ppl dopamine or punish their naughty behavior
+        console.log(correct ? "Correct!" : `Nope. The answer was ${currentChallengeData.factual}`);
+        setHighlightStyle(correct ? styles.selectedCorrect : styles.selectedWrong);
     } 
 
     return (
@@ -62,7 +67,7 @@ function BinaryGame({ user }) {
                     </p>
                 </div>
 
-                <div className={styles.singleCardWrapper}>
+                <div className={`${styles.singleCardWrapper} ${highlightStyle}`}>
                     <div className={styles.singleCard}>
                         <video id="videoPlayer" controls loop></video>
                         <p className={styles.singlePrompt}>
