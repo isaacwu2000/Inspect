@@ -1,6 +1,6 @@
 [
   {
-    "origin": ["http://localhost:5173"],
+    "origin": ["http://localhost:5173", "https://inspect-game.web.app"],
     "method": ["GET", "HEAD"],
     "responseHeader": ["Content-Type", "Content-Length", "Range", "Accept"],
     "maxAgeSeconds": 3600
