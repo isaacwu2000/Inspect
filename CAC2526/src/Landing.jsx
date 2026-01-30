@@ -1,5 +1,5 @@
 // Landing.jsx
-import React from 'react';
+import React, { useRef } from 'react';
 import googleLogo from '/src/assets/google.svg';
 import NavBar from './NavBar.jsx';
 import EyeLogo from './EyeLogo.jsx';
@@ -7,8 +7,21 @@ import { signInWithPopup, auth, provider } from './main.jsx';
 import styles from './Landing.module.css';
 
 function Landing(){
+    const modesRef = useRef(null);
+
     async function handleSignIn() {
         await signInWithPopup(auth, provider);
+    }
+
+    function scrollToModes(e) {
+        e.preventDefault();
+        if (!modesRef.current) return;
+        const rect = modesRef.current.getBoundingClientRect();
+        const target = rect.top + window.scrollY - (window.innerHeight - rect.height) / 2;
+        window.scrollTo({
+            top: Math.max(target, 0),
+            behavior: 'smooth'
+        });
     }
 
     const steps = [
@@ -53,7 +66,9 @@ function Landing(){
                                     <img className={styles.googleLogo} src={googleLogo} alt="Google logo"/>
                                     <span>Sign in with Google</span>
                                 </button>
-                                <a className={styles.secondaryBtn} href="#modes">Preview the modes</a>
+                                <a className={styles.secondaryBtn} href="#modes" onClick={scrollToModes}>
+                                    Preview the modes
+                                </a>
                             </div>
                         </div>
 
@@ -68,7 +83,7 @@ function Landing(){
                     </div>
                 </section>
 
-                <section id="modes" className={styles.section}>
+                <section id="modes" ref={modesRef} className={`${styles.section} ${styles.modesSection}`}>
                     <h2>Two ways to train</h2>
                     <p className={styles.sectionLead}>
                         Pick the challenge that matches how you spot lies in the wild.
@@ -140,7 +155,9 @@ function Landing(){
                             <img className={styles.googleLogo} src={googleLogo} alt="Google logo"/>
                             <span>Sign in with Google</span>
                         </button>
-                        <a className={styles.secondaryBtn} href="#modes">See the modes first</a>
+                        <a className={styles.secondaryBtn} href="#modes" onClick={scrollToModes}>
+                            See the modes first
+                        </a>
                     </div>
                 </section>
             </main>

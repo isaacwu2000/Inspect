@@ -162,6 +162,10 @@
     width: 100%;
 }
 
+.modesSection {
+    scroll-margin-top: 120px;
+}
+
 .card {
     background: #ffffff;
     border: 1px solid #dfe8e6;
