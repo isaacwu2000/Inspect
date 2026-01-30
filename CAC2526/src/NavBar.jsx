@@ -16,14 +16,17 @@ function NavBar({ mode }) {
     await signOut(auth);
   }
 
+  // Brand click: always goes to public landing so signed-in users can revisit it
+  const brandHref = mode === "authed" ? "/" : "/";
+
   return (
     <nav className="navbar">
       <div className="navbarInner">
         <Link 
-          to={mode === "public" ? "/" : "/menu"} 
+          to={brandHref}
           className="brand"
         >
-          <EyeLogo size={24} animated={true} />
+          <EyeLogo size={24} animated={true} trackCursor={true} />
           <span className="brandText">Inspect</span>
         </Link>
 
