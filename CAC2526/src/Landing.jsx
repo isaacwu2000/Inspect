@@ -87,7 +87,7 @@ function Landing(){
     return(
         <>
             <NavBar mode="public" />
-            <main>
+            <main className={styles.landingMain}>
                 {hero}
                 {mission}
                 {about}

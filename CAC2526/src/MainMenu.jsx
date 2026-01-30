@@ -7,17 +7,12 @@ function MainMenu({ user }) {
     return (
         <>
             <NavBar mode="authed" />
-            <main>
+            <main className={styles.menu}>
                 <h1 style={{marginTop:0, textAlign:'center'}}>
                     Greetings {user?.displayName || "there"}, please select a mode:
                 </h1>
 
-                <div style={{
-                    display:'grid',
-                    gridTemplateColumns:'repeat(auto-fit,minmax(min(280px,100%),1fr))',
-                    gap:'24px',
-                    marginTop:'32px'
-                }}>
+                <div className={styles.optionsGrid}>
                     <Link to="/game/binary" style={{textDecoration:'none', color:'inherit'}}>
                         <div className={styles.card}>
                             <h2 style={{marginTop:0, marginBottom:'8px', lineHeight:1.2}}>
