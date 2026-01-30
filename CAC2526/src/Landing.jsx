@@ -13,18 +13,22 @@ function Landing(){
 
     const hero = (
         <>
-            <div id={styles.banner}>
-                <div>
-                    <h1 id={styles.valueProp}>
-                        Learn to distinguish <u>truth</u> from disinformation
-                    </h1>
-                    <p id={styles.subtitleProp}>
-                        Inspect teaches you using engaging challenges
-                        that model real-world, AI-generated content.
-                    </p>
-                </div>
-                
-                 <EyeLogo size={64} className="eye-hero" animated={true} />
+            <div id="banner" style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '24px',
+                padding: '24px 0'
+            }}>
+                <h1 id="valueProp" style={{
+                    fontSize: 'clamp(28px,4vw,44px)',
+                    lineHeight: '1.1',
+                    margin: 0,
+                    flex: 1
+                }}>
+                    Learn to distinguish <u>truth</u> from disinformation
+                </h1>
+                <EyeLogo size={64} className="eye-hero" animated={true} />
             </div>
 
             <button onClick={handleSignIn} id={styles.signInBtnBig}>

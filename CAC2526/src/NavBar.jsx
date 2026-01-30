@@ -1,3 +1,4 @@
+// NavBar.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import EyeLogo from './EyeLogo.jsx';
@@ -5,6 +6,7 @@ import { signInWithPopup, signOut, auth, provider } from './main.jsx';
 import './NavBar.css';
 
 function NavBar({ mode }) {
+  // mode: "public" or "authed"
 
   async function handleSignIn() {
     await signInWithPopup(auth, provider);
@@ -21,7 +23,7 @@ function NavBar({ mode }) {
           to={mode === "public" ? "/" : "/menu"} 
           className="brand"
         >
-           <EyeLogo size={24} className="eye-hero" animated={true} />
+          <EyeLogo size={24} animated={true} />
           <span className="brandText">Inspect</span>
         </Link>
 
