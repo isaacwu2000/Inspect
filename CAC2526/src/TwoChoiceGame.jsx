@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import styles from './Game.module.css';
 import NavBar from './NavBar.jsx';
 import EyeLogo from './EyeLogo.jsx';
-import { auth, db, signOut, storage, ref, getBlob, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy } from './main.jsx';
+import { auth, db, signOut, storage, ref, getBlob, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, increment } from './main.jsx';
 
 function TwoChoiceGame({ user }){
     const [currentChallengeId, setCurrentChallengeId] = useState(null);
@@ -18,8 +18,10 @@ function TwoChoiceGame({ user }){
         if (!snap.exists()) {
             await setDoc(userRef, {
                 displayName: user.displayName,
-                email: user.email
-            });
+                email: user.email,
+                xp: 0,
+                answers: 0
+            }, { merge: true });
         }
     }
 
@@ -130,12 +132,24 @@ function TwoChoiceGame({ user }){
             challengeLevel: challengeData.level,
             wasCorrect: wasCorrect
         });
+        await updateUserXp(wasCorrect);
         return true;
+    }
+
+    async function updateUserXp(wasCorrect) {
+        const delta = wasCorrect ? 10 : 4;
+        const userRef = doc(db, "users", user.uid);
+        await setDoc(userRef, {
+            xp: increment(delta),
+            answers: increment(1),
+            displayName: user.displayName,
+            email: user.email
+        }, { merge: true });
     }
 
     return (
         <>
-            <NavBar mode="authed" />
+            <NavBar mode="authed" user={user} />
             <main>
                 <div className={styles.question}>
                     <h1 className={styles.questionStatement}>Which one is false / more extreme?</h1>

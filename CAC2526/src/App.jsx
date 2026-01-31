@@ -5,6 +5,7 @@ import Landing from './Landing.jsx'
 import MainMenu from './MainMenu.jsx'
 import TwoChoiceGame from './TwoChoiceGame.jsx'
 import BinaryGame from './BinaryGame.jsx'
+import Profile from './Profile.jsx'
 
 import { auth, onAuthStateChanged } from './main.jsx'
 
@@ -84,6 +85,16 @@ function App() {
             <BinaryGame user={user}/>
           </ProtectedRoute>
         } 
+      />
+
+      {/*Profile*/}
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute isLoggedIn={isLoggedIn}>
+            <Profile user={user}/>
+          </ProtectedRoute>
+        }
       />
 
       {/*lmao hopfully we don't need this:*/}

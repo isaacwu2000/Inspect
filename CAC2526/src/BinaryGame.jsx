@@ -3,7 +3,7 @@ import styles from './Game.module.css';
 import NavBar from './NavBar.jsx';
 import EyeLogo from './EyeLogo.jsx';
 
-import { db, storage, ref, getBlob, doc, getDoc, setDoc, collection, getDocs, query, orderBy, where } from './main.jsx';
+import { db, storage, ref, getBlob, doc, getDoc, setDoc, updateDoc, collection, getDocs, query, orderBy, where, increment } from './main.jsx';
 
 function BinaryGame({ user }) {
     const [currentChallengeData, setCurrentChallengeData] = useState(null);
@@ -17,8 +17,10 @@ function BinaryGame({ user }) {
         if (!snap.exists()) {
             await setDoc(userRef, {
                 displayName: user.displayName,
-                email: user.email
-            });
+                email: user.email,
+                xp: 0,
+                answers: 0
+            }, { merge: true });
         }
     }
 
@@ -38,7 +40,19 @@ function BinaryGame({ user }) {
             challengeLevel: currentChallengeData.level,
             wasCorrect: wasCorrect
         });
+        await updateUserXp(wasCorrect);
         return true;
+    }
+
+    async function updateUserXp(wasCorrect) {
+        const delta = wasCorrect ? 10 : 4;
+        const userRef = doc(db, "users", user.uid);
+        await setDoc(userRef, {
+            xp: increment(delta),
+            answers: increment(1),
+            displayName: user.displayName,
+            email: user.email
+        }, { merge: true });
     }
 
     async function loadVideo(videoURL) {
@@ -89,7 +103,7 @@ function BinaryGame({ user }) {
 
     return (
         <>
-            <NavBar mode="authed" />
+            <NavBar mode="authed" user={user} />
             <main>
                 <div className={styles.question}>
                     <h1 className={styles.questionStatement}>True or False?</h1>

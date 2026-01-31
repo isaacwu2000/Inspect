@@ -9,7 +9,7 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 export { ref, getBlob } from "firebase/storage";
-export { collection, doc, addDoc, updateDoc, setDoc, getDoc, getDocs, query, where, orderBy, limit, serverTimestamp } from 'firebase/firestore';
+export { collection, doc, addDoc, updateDoc, setDoc, getDoc, getDocs, query, where, orderBy, limit, serverTimestamp, increment } from 'firebase/firestore';
 export { onAuthStateChanged, signOut, signInWithPopup } from 'firebase/auth';
 
 const firebaseConfig = {

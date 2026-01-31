@@ -1,0 +1,169 @@
+.profileMain {
+    max-width: 900px;
+    margin: 128px auto 64px auto;
+    padding: 0 24px 48px 24px;
+    display: grid;
+    gap: 28px;
+}
+
+.headerCard {
+    background: linear-gradient(135deg, #e6f4f0 0%, #ffffff 60%);
+    border: 1px solid #dbe9e5;
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.07);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 16px;
+    align-items: center;
+}
+
+.avatarWrap {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--accent);
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatarFallback {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    background: #dce6e3;
+    color: #1c1c1c;
+    font-weight: 600;
+    font-size: 24px;
+}
+
+.headerCopy {
+    display: grid;
+    gap: 4px;
+}
+
+.kicker {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+    color: var(--darkAccent);
+}
+
+.name {
+    margin: 0;
+    font-size: clamp(26px, 4vw, 32px);
+}
+
+.levelTitle {
+    margin: 0;
+    color: #3c3c3c;
+}
+
+.statsCard {
+    border: 1px solid #dfe8e6;
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+    display: grid;
+    gap: 16px;
+}
+
+.statBlock {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+}
+
+.statLabel {
+    margin: 0;
+    color: #555;
+}
+
+.statValue {
+    margin: 0;
+    font-weight: 600;
+}
+
+.progressWrap {
+    display: grid;
+    gap: 8px;
+}
+
+.progressTop, .progressNums {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #4a4a4a;
+}
+
+.progressBar {
+    width: 100%;
+    height: 12px;
+    border-radius: 999px;
+    background: #eef4f3;
+    overflow: hidden;
+    border: 1px solid #dce6e3;
+}
+
+.progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #0f7d73);
+}
+
+.levelList {
+    border: 1px solid #dfe8e6;
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.05);
+}
+
+.levelList h2 {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.levelGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+}
+
+.levelItem {
+    padding: 10px 12px;
+    border: 1px solid #e2ebea;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+.levelName {
+    margin: 0;
+    font-weight: 600;
+}
+
+.levelReq {
+    margin: 0;
+    color: #555;
+    font-size: 14px;
+}
+
+@media (max-width: 640px) {
+    .headerCard {
+        grid-template-columns: 1fr;
+        text-align: center;
+        justify-items: center;
+    }
+
+    .statBlock {
+        grid-template-columns: 1fr;
+        gap: 4px;
+        text-align: center;
+    }
+}

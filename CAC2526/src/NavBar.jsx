@@ -5,7 +5,7 @@ import EyeLogo from './EyeLogo.jsx';
 import { signInWithPopup, signOut, auth, provider } from './main.jsx';
 import './NavBar.css';
 
-function NavBar({ mode }) {
+function NavBar({ mode, user }) {
   // mode: "public" or "authed"
 
   async function handleSignIn() {
@@ -39,6 +39,15 @@ function NavBar({ mode }) {
           ) : (
             <>
               <Link className="navLink" to="/menu">Menu</Link>
+              <Link className="profileBtn" to="/profile" title="Your profile">
+                {user?.photoURL ? (
+                  <img src={user.photoURL} alt="Profile" className="avatar"/>
+                ) : (
+                  <div className="avatar placeholder">
+                    {user?.displayName?.[0]?.toUpperCase() || "?"}
+                  </div>
+                )}
+              </Link>
               <button className="navBtn" onClick={handleSignOut}>Sign out</button>
             </>
           )}

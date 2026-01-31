@@ -6,7 +6,7 @@ import styles from './MainMenu.module.css';
 function MainMenu({ user }) {
     return (
         <>
-            <NavBar mode="authed" />
+            <NavBar mode="authed" user={user} />
             <main className={styles.menu}>
                 <h1 style={{marginTop:0, textAlign:'center'}}>
                     Greetings {user?.displayName || "there"}, please select a mode:
