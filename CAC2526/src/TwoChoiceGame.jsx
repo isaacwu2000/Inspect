@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import styles from './Game.module.css';
 import NavBar from './NavBar.jsx';
 import EyeLogo from './EyeLogo.jsx';
@@ -14,6 +14,9 @@ function TwoChoiceGame({ user }){
     const [streak, setStreak] = useState(0);
     const [xpGain, setXpGain] = useState(0);
     const [streakEvent, setStreakEvent] = useState(null);
+    const [answerLocked, setAnswerLocked] = useState(false);
+    const nextTimerRef = useRef(null);
+    const [feedbackKey, setFeedbackKey] = useState(0);
 
     async function ensureUserExists() {
         const userRef = doc(db, "users", user.uid);
@@ -62,6 +65,13 @@ function TwoChoiceGame({ user }){
     }
 
     async function pickNextChallenge() {
+        clearNextTimer();
+        setAnswerLocked(false);
+        setSelectedIdx(null);
+        setFeedback("");
+        setXpGain(0);
+        setStreakEvent(null);
+
         // get next unseen challenge (or fallback first)
         const completed = await getCompletedChallenges();
         const challengesRef = collection(db, "challenges");
@@ -84,8 +94,6 @@ function TwoChoiceGame({ user }){
         console.log(chosenDoc.data());
         setCurrentChallengeId(chosenDoc.id);
         setChallengeData(chosenDoc.data());
-        setSelectedIdx(null);
-        setFeedback("");
     }
 
     // Shuffle two options but make sure that we remember which one is false.
@@ -119,7 +127,17 @@ function TwoChoiceGame({ user }){
         }
     }, [challengeData]);
 
+    function clearNextTimer() {
+        if (nextTimerRef.current) {
+            clearTimeout(nextTimerRef.current);
+            nextTimerRef.current = null;
+        }
+    }
+
     function handleAnswer(idx) {
+        if (answerLocked) return;
+        setAnswerLocked(true);
+
         setSelectedIdx(idx);
         const correct = (idx === falseIndex);
         const newStreak = correct ? streak + 1 : 0;
@@ -136,10 +154,11 @@ function TwoChoiceGame({ user }){
 
         updateCompletedChallenges(correct, xpAward, newStreak);
         setFeedback(correct ? "Correct!" : "Not quite. Try again");
-    }
+        setFeedbackKey(k => k + 1);
 
-    async function handleNext() {
-        await pickNextChallenge();
+        nextTimerRef.current = setTimeout(() => {
+            pickNextChallenge();
+        }, 1200);
     }
 
     async function updateCompletedChallenges(wasCorrect = true, xpAward = 0, streakVal = 0) {
@@ -205,9 +224,10 @@ function TwoChoiceGame({ user }){
                 </div>
 
                 <div className={styles.feedback}>
-                    {feedback && <div>{feedback}</div>}
                     {feedback && (
-                        <button className={styles.nextBtn} onClick={() => handleNext()}>Continue →</button>
+                        <div key={feedbackKey} className={styles.feedbackMessage}>
+                            {feedback}
+                        </div>
                     )}
                 </div>
             </main>

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import styles from './Game.module.css';
 import NavBar from './NavBar.jsx';
 import EyeLogo from './EyeLogo.jsx';
@@ -13,8 +13,11 @@ function BinaryGame({ user }) {
     const [streak, setStreak] = useState(0);
     const [xpGain, setXpGain] = useState(0);
     const [streakEvent, setStreakEvent] = useState(null);
+    const [answerLocked, setAnswerLocked] = useState(false);
+    const nextTimerRef = useRef(null);
+    const [feedbackKey, setFeedbackKey] = useState(0);
 
-    // lock scrolling while on this page
+    // lock scrolling only while this screen is mounted
     useEffect(() => {
         const prevBodyOverflow = document.body.style.overflow;
         const prevDocOverflow = document.documentElement.style.overflow;
@@ -79,34 +82,55 @@ function BinaryGame({ user }) {
         video.src = URL.createObjectURL(blob);
     }
 
+    function clearNextTimer() {
+        if (nextTimerRef.current) {
+            clearTimeout(nextTimerRef.current);
+            nextTimerRef.current = null;
+        }
+    }
+
     async function loadChallenge() {
+        clearNextTimer();
+        setAnswerLocked(false);
+        setXpGain(0);
+        setStreakEvent(null);
         setHighlightStyle("");
+        setFeedback("");
 
         const challengesRef = await collection(db, "challenges");
         const qChallenges = await query(challengesRef, orderBy("level", "asc"), where("level", "!=", 67));
         const snap = await getDocs(qChallenges);
-        if (snap.empty) {setChallenge(null); return;}
+        if (snap.empty) {
+            setCurrentChallengeData(null);
+            setCurrentChallengeId(null);
+            return;
+        }
         // TODO: implement getCompletedChallengers() here
         
         const completed = await getCompletedChallenges();
         let challengeSnap = snap.docs.find(d => !completed.includes(d.id));
-        console.log(challengeSnap.data());
         if (!challengeSnap) {
-            // Santi fallback option: just take first doc
+            // fallback: just take first doc
             challengeSnap = snap.docs[0];
+        }
+        if (!challengeSnap) {
+            setCurrentChallengeData(null);
+            setCurrentChallengeId(null);
+            return;
         }
 
         const challengeData = challengeSnap.data();
-        console.log(challengeData);
         loadVideo(challengeData.videoURL);
         setCurrentChallengeData(challengeData);
         setCurrentChallengeId(challengeSnap.id);
-        setFeedback("");
     }
 
     useEffect(() => {loadChallenge();}, []);
 
     function guessRealOrFake(guessIsReal) {
+        if (answerLocked || !currentChallengeData) return;
+        setAnswerLocked(true);
+
         if (!currentChallengeData) return;
 
         const correct = (guessIsReal === currentChallengeData.factual);
@@ -124,8 +148,13 @@ function BinaryGame({ user }) {
 
         updateCompletedChallenges(correct, xpAward, newStreak);
         setFeedback(correct ? "Correct!" : `Nope. The answer was ${currentChallengeData.factual}`); //use emojis to give ppl dopamine or punish their naughty behavior
+        setFeedbackKey(k => k + 1);
         console.log(correct ? "Correct!" : `Nope. The answer was ${currentChallengeData.factual}`);
         setHighlightStyle(correct ? styles.selectedCorrect : styles.selectedWrong);
+
+        nextTimerRef.current = setTimeout(() => {
+            loadChallenge();
+        }, 1200);
     } 
 
     return (
@@ -165,12 +194,11 @@ function BinaryGame({ user }) {
                     </div>
                 </div>
 
-                <div className={styles.feedback}>
-                    {feedback && <div>{feedback}</div>}
+                <div className={`${styles.feedback} ${feedback ? styles.feedbackVisible : ''}`}>
                     {feedback && (
-                        <button className={styles.nextBtn} onClick={() => loadChallenge()}>
-                            Continue →
-                        </button>
+                        <div key={feedbackKey} className={styles.feedbackMessage}>
+                            {feedback}
+                        </div>
                     )}
                 </div>
             </main>
