@@ -18,8 +18,11 @@ function TwoChoiceGame({ user }){
     const nextTimerRef = useRef(null);
     const [feedbackKey, setFeedbackKey] = useState(0);
     const seenRef = useRef(new Set());
-    const [videoSrcs, setVideoSrcs] = useState(["",""]);
+    const [videoSrcs, setVideoSrcs] = useState([null,null]);
     const videoUrlRefs = useRef([null,null]);
+    const [answeredCount, setAnsweredCount] = useState(0);
+    const [level, setLevel] = useState(1);
+    const [levelUp, setLevelUp] = useState(false);
 
     // lock scrolling while this screen is mounted
     useEffect(() => {
@@ -64,7 +67,7 @@ function TwoChoiceGame({ user }){
                 URL.revokeObjectURL(videoUrlRefs.current[idx]);
                 videoUrlRefs.current[idx] = null;
             }
-            if (!url) return "";
+            if (!url) return null;
             const storageRef = ref(storage, url);
             const blob = await getBlob(storageRef);
             const objUrl = URL.createObjectURL(blob);
@@ -110,7 +113,6 @@ function TwoChoiceGame({ user }){
         const chosenDoc = pool[Math.floor(Math.random() * pool.length)];
         seen.add(chosenDoc.id);
 
-        console.log(chosenDoc.data());
         setCurrentChallengeId(chosenDoc.id);
         setChallengeData(chosenDoc.data());
     }
@@ -163,8 +165,19 @@ function TwoChoiceGame({ user }){
         const newStreak = correct ? streak + 1 : 0;
         setStreak(newStreak);
 
+        const nextAnswered = answeredCount + 1;
+        const newLevel = Math.floor(nextAnswered / 3) + 1;
+        const leveledUp = newLevel > level;
+        if (leveledUp) {
+            setLevel(newLevel);
+            setLevelUp(true);
+            setTimeout(() => setLevelUp(false), 900);
+        }
+        setAnsweredCount(nextAnswered);
+
         const bonus = correct ? Math.max(newStreak - 1, 0) * 3 : 0;
-        const xpAward = correct ? 10 + bonus : 4;
+        const levelBonus = (newLevel - 1) * 2;
+        const xpAward = correct ? 10 + bonus + levelBonus : 4 + Math.max(levelBonus - 2, 0);
 
         setXpGain(xpAward);
         setTimeout(() => setXpGain(0), 1200);
@@ -207,8 +220,8 @@ function TwoChoiceGame({ user }){
             <main>
                 <div className={styles.question}>
                     <h1 className={styles.questionStatement}>Which one is false / more extreme?</h1>
-                    <p className={styles.questionLevel}>
-                        {challengeData?.level != null ? `Level ${challengeData.level}` : "Level ?"}
+                    <p className={`${styles.questionLevel} ${levelUp ? styles.levelUp : ''}`}>
+                        Level {level}
                     </p>
                     <EyeLogo size={64} className="eye-hero" animated={true} />
                     <div className={styles.statusRow}>
@@ -233,7 +246,11 @@ function TwoChoiceGame({ user }){
                         }
                         return (
                             <div key={idx} className={`${styles.challengeOption} ${extraClass}`}>
-                                <video id={`videoPlayer${idx}`} controls loop src={videoSrcs[idx] || ""}></video>
+                                {videoSrcs[idx] ? (
+                                    <video id={`videoPlayer${idx}`} controls loop src={videoSrcs[idx]}></video>
+                                ) : (
+                                    <div className={styles.videoPlaceholder}>Loading video…</div>
+                                )}
                                 <p className={styles.challengeText}>{optText}</p>
                                 <button className={styles.challengeBtn} onClick={() => handleAnswer(idx)}>
                                     {idx === 0 ? "This one!" : "No, this one!"}

@@ -107,8 +107,8 @@
 .challengeGrid {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 20px;
     align-items: stretch;
 }
 
@@ -142,7 +142,7 @@
 .challengeText {
     margin: 0;
     user-select: none;
-    font-size: 17px;
+    font-size: clamp(15px, 1.05vw, 18px);
     line-height: 1.4;
     text-align: center;
     white-space: pre-wrap;
@@ -229,7 +229,7 @@
 
 /*Single card for the other mode or smth*/
 .singleCardWrapper {
-    max-width: 700px;
+    max-width: 760px;
     margin: 0 auto;
 }
 
