@@ -11,6 +11,9 @@ function TwoChoiceGame({ user }){
     const [falseIndex, setFalseIndex] = useState(null); //Santi: index of the FALSE statement
     const [selectedIdx, setSelectedIdx] = useState(null);
     const [feedback, setFeedback] = useState("");
+    const [streak, setStreak] = useState(0);
+    const [xpGain, setXpGain] = useState(0);
+    const [streakEvent, setStreakEvent] = useState(null);
 
     async function ensureUserExists() {
         const userRef = doc(db, "users", user.uid);
@@ -119,7 +122,19 @@ function TwoChoiceGame({ user }){
     function handleAnswer(idx) {
         setSelectedIdx(idx);
         const correct = (idx === falseIndex);
-        updateCompletedChallenges(correct);
+        const newStreak = correct ? streak + 1 : 0;
+        setStreak(newStreak);
+
+        const bonus = correct ? Math.max(newStreak - 1, 0) * 3 : 0;
+        const xpAward = correct ? 10 + bonus : 4;
+
+        setXpGain(xpAward);
+        setTimeout(() => setXpGain(0), 1200);
+
+        setStreakEvent(correct ? 'up' : 'break');
+        setTimeout(() => setStreakEvent(null), 700);
+
+        updateCompletedChallenges(correct, xpAward, newStreak);
         setFeedback(correct ? "Correct!" : "Not quite. Try again");
     }
 
@@ -127,21 +142,21 @@ function TwoChoiceGame({ user }){
         await pickNextChallenge();
     }
 
-    async function updateCompletedChallenges(wasCorrect = true) {
+    async function updateCompletedChallenges(wasCorrect = true, xpAward = 0, streakVal = 0) {
         await setDoc(doc(db, "users", user.uid, "completedChallenges", currentChallengeId),{
             challengeLevel: challengeData.level,
             wasCorrect: wasCorrect
         });
-        await updateUserXp(wasCorrect);
+        await updateUserXp(xpAward, streakVal);
         return true;
     }
 
-    async function updateUserXp(wasCorrect) {
-        const delta = wasCorrect ? 10 : 4;
+    async function updateUserXp(xpAward, streakVal) {
         const userRef = doc(db, "users", user.uid);
         await setDoc(userRef, {
-            xp: increment(delta),
+            xp: increment(xpAward),
             answers: increment(1),
+            streak: streakVal,
             displayName: user.displayName,
             email: user.email
         }, { merge: true });
@@ -154,9 +169,20 @@ function TwoChoiceGame({ user }){
                 <div className={styles.question}>
                     <h1 className={styles.questionStatement}>Which one is false / more extreme?</h1>
                     <p className={styles.questionLevel}>
-                        Level 3
+                        {challengeData?.level != null ? `Level ${challengeData.level}` : "Level ?"}
                     </p>
                     <EyeLogo size={64} className="eye-hero" animated={true} />
+                    <div className={styles.statusRow}>
+                        <div className={`${styles.streakBadge} ${streakEvent === 'up' ? styles.streakUp : ''} ${streakEvent === 'break' ? styles.streakBreak : ''}`}>
+                            <span className={styles.flame}>🔥</span>
+                            <span>Streak {streak}</span>
+                        </div>
+                        {xpGain > 0 && (
+                            <div className={`${styles.xpToast} ${styles.pop}`}>
+                                <span>+{xpGain} XP</span>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 <div className={styles.challengeGrid}>

@@ -39,6 +39,7 @@ function NavBar({ mode, user }) {
           ) : (
             <>
               <Link className="navLink" to="/menu">Menu</Link>
+              <button className="navBtn" onClick={handleSignOut}>Sign out</button>
               <Link className="profileBtn" to="/profile" title="Your profile">
                 {user?.photoURL ? (
                   <img src={user.photoURL} alt="Profile" className="avatar"/>
@@ -48,7 +49,6 @@ function NavBar({ mode, user }) {
                   </div>
                 )}
               </Link>
-              <button className="navBtn" onClick={handleSignOut}>Sign out</button>
             </>
           )}
         </div>

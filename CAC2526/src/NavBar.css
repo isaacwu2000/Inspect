@@ -17,17 +17,17 @@
 
 /*Santo: centers and constrains items to the center of the navbar:*/
 .navbarInner {
-    max-width: 900px;
     width: 100%;
+    max-width: 1260px;
     margin: 0 auto;
-
-    padding: 0 24px;
+    padding: 0 28px;
     display: flex;
     align-items: center;
     gap: 12px;
 
     /*Santi: Allow wrapping for smaller screens only: */
     flex-wrap: wrap;
+    row-gap: 8px;
 }
 
 .brand {
@@ -51,14 +51,12 @@
 .navActions {
     display: flex;
     align-items: center;
-    gap: 12px;
-
-    flex: 0 0 auto;
-
+    gap: 10px;
+    flex: 1 1 auto;
+    min-width: 0;
     flex-wrap: wrap;
     justify-content: flex-end;
     text-align: right;
-    max-width: 100%;
 }
 
 .navBtn {
@@ -124,4 +122,21 @@
     background: #e4ecea;
     color: #1c1c1c;
     font-weight: 600;
+}
+
+@media (max-width: 640px) {
+    .navbarInner {
+        padding: 0 20px;
+    }
+
+    .brand {
+        flex: 1 1 100%;
+        justify-content: space-between;
+    }
+
+    .navActions {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 8px;
+    }
 }
