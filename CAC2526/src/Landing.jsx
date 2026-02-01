@@ -1,13 +1,17 @@
 // Landing.jsx
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import googleLogo from '/src/assets/google.svg';
 import NavBar from './NavBar.jsx';
 import EyeLogo from './EyeLogo.jsx';
 import { signInWithPopup, auth, provider } from './main.jsx';
 import styles from './Landing.module.css';
 
-function Landing(){
+function Landing({ isLoggedIn, user }){
     const modesRef = useRef(null);
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    }, []);
 
     async function handleSignIn() {
         await signInWithPopup(auth, provider);
@@ -48,7 +52,7 @@ function Landing(){
 
     return(
         <>
-            <NavBar mode="public" />
+            <NavBar mode={isLoggedIn ? "authed" : "public"} user={user} />
             <main className={styles.landingMain}>
                 <section className={`${styles.section} ${styles.hero}`}>
                     <div className={styles.heroGrid}>

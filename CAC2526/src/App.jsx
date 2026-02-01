@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 
 import Landing from './Landing.jsx'
@@ -20,6 +20,7 @@ function ProtectedRoute({ isLoggedIn, children }) {
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [user, setUser] = useState(null)
+  const hasAutoRouted = useRef(false)
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -38,9 +39,20 @@ function App() {
     return () => unsub()
   }, [])
 
-  //after login, if we're on "/", push them to /menu
+  //after login, if we're on "/", push them to /menu once per session
   useEffect(() => {
-    if (isLoggedIn && location.pathname === "/") {
+    if (!isLoggedIn) {
+      hasAutoRouted.current = false
+      return
+    }
+
+    if (location.pathname !== "/") {
+      hasAutoRouted.current = true
+      return
+    }
+
+    if (!hasAutoRouted.current) {
+      hasAutoRouted.current = true
       navigate('/menu', { replace: true })
     }
   }, [isLoggedIn, location.pathname, navigate])
@@ -52,7 +64,8 @@ function App() {
         path="/" 
         element={
           <Landing 
-            setIsLoggedIn={setIsLoggedIn} 
+            isLoggedIn={isLoggedIn}
+            user={user}
           />
         } 
       />

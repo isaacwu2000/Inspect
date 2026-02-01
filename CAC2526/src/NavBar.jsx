@@ -1,12 +1,13 @@
 // NavBar.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import EyeLogo from './EyeLogo.jsx';
 import { signInWithPopup, signOut, auth, provider } from './main.jsx';
 import './NavBar.css';
 
 function NavBar({ mode, user }) {
   // mode: "public" or "authed"
+  const location = useLocation();
 
   async function handleSignIn() {
     await signInWithPopup(auth, provider);
@@ -16,8 +17,8 @@ function NavBar({ mode, user }) {
     await signOut(auth);
   }
 
-  // Brand click: always goes to public landing so signed-in users can revisit it
-  const brandHref = mode === "authed" ? "/" : "/";
+  // Brand click: toggle between landing and menu when signed in
+  const brandHref = mode === "authed" && location.pathname === "/" ? "/menu" : "/";
 
   return (
     <nav className="navbar">
