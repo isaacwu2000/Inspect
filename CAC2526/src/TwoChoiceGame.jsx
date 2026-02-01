@@ -18,6 +18,18 @@ function TwoChoiceGame({ user }){
     const nextTimerRef = useRef(null);
     const [feedbackKey, setFeedbackKey] = useState(0);
 
+    // lock scrolling while this screen is mounted
+    useEffect(() => {
+        const prevBodyOverflow = document.body.style.overflow;
+        const prevDocOverflow = document.documentElement.style.overflow;
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = prevBodyOverflow;
+            document.documentElement.style.overflow = prevDocOverflow;
+        };
+    }, []);
+
     async function ensureUserExists() {
         const userRef = doc(db, "users", user.uid);
         const snap = await getDoc(userRef);
@@ -72,24 +84,33 @@ function TwoChoiceGame({ user }){
         setXpGain(0);
         setStreakEvent(null);
 
-        // get next unseen challenge (or fallback first)
-        const completed = await getCompletedChallenges();
+        // get next unseen challenge (session-unique until all seen)
         const challengesRef = collection(db, "challenges");
         const qChallenges = query(challengesRef, orderBy("level", "asc"), where("level", "==", 67));
         const qSnap = await getDocs(qChallenges);
 
-        let chosenDoc = qSnap.docs.find(d => !completed.includes(d.id));
-        
-        if (!chosenDoc) {
-            // Santi fallback option: just take first doc
-            chosenDoc = qSnap.docs[0];
-        }
-        if (!chosenDoc) {
-            // If Isaac forgot to put more challenges: (hopefully not)
+        const seen = seenRef.current;
+        const allDocs = qSnap.docs;
+
+        if (allDocs.length === 0) {
             setCurrentChallengeId(null);
             setChallengeData(null);
             return;
         }
+
+        if (seen.size >= allDocs.length) {
+            seen.clear();
+        }
+
+        const pool = allDocs.filter(d => !seen.has(d.id));
+        if (pool.length === 0) {
+            setCurrentChallengeId(null);
+            setChallengeData(null);
+            return;
+        }
+
+        const chosenDoc = pool[Math.floor(Math.random() * pool.length)];
+        seen.add(chosenDoc.id);
 
         console.log(chosenDoc.data());
         setCurrentChallengeId(chosenDoc.id);

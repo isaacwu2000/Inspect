@@ -16,6 +16,10 @@ function BinaryGame({ user }) {
     const [answerLocked, setAnswerLocked] = useState(false);
     const nextTimerRef = useRef(null);
     const [feedbackKey, setFeedbackKey] = useState(0);
+    const [answeredCount, setAnsweredCount] = useState(0);
+    const [level, setLevel] = useState(1);
+    const [levelUp, setLevelUp] = useState(false);
+    const seenRef = useRef(new Set());
 
     // lock scrolling only while this screen is mounted
     useEffect(() => {
@@ -105,19 +109,26 @@ function BinaryGame({ user }) {
             setCurrentChallengeId(null);
             return;
         }
-        // TODO: implement getCompletedChallengers() here
-        
-        const completed = await getCompletedChallenges();
-        let challengeSnap = snap.docs.find(d => !completed.includes(d.id));
-        if (!challengeSnap) {
-            // fallback: just take first doc
-            challengeSnap = snap.docs[0];
+
+        const seen = seenRef.current;
+        const allDocs = snap.docs;
+
+        // Reset cycle once we've seen everything
+        if (seen.size >= allDocs.length) {
+            seen.clear();
         }
-        if (!challengeSnap) {
+
+        // pick from unseen-in-session pool only
+        const pool = allDocs.filter(d => !seen.has(d.id));
+
+        if (pool.length === 0) {
             setCurrentChallengeData(null);
             setCurrentChallengeId(null);
             return;
         }
+
+        const challengeSnap = pool[Math.floor(Math.random() * pool.length)];
+        seen.add(challengeSnap.id);
 
         const challengeData = challengeSnap.data();
         loadVideo(challengeData.videoURL);
@@ -127,7 +138,7 @@ function BinaryGame({ user }) {
 
     useEffect(() => {loadChallenge();}, []);
 
-    function guessRealOrFake(guessIsReal) {
+    async function guessRealOrFake(guessIsReal) {
         if (answerLocked || !currentChallengeData) return;
         setAnswerLocked(true);
 
@@ -137,8 +148,19 @@ function BinaryGame({ user }) {
         const newStreak = correct ? streak + 1 : 0;
         setStreak(newStreak);
 
+        const nextAnswered = answeredCount + 1;
+        const newLevel = Math.floor(nextAnswered / 3) + 1;
+        const leveledUp = newLevel > level;
+        if (leveledUp) {
+            setLevel(newLevel);
+            setLevelUp(true);
+            setTimeout(() => setLevelUp(false), 900);
+        }
+        setAnsweredCount(nextAnswered);
+
         const bonus = correct ? Math.max(newStreak - 1, 0) * 3 : 0;
-        const xpAward = correct ? 10 + bonus : 4;
+        const levelBonus = (newLevel - 1) * 2;
+        const xpAward = correct ? 10 + bonus + levelBonus : 4 + Math.max(levelBonus - 2, 0);
 
         setXpGain(xpAward);
         setTimeout(() => setXpGain(0), 1200);
@@ -146,7 +168,7 @@ function BinaryGame({ user }) {
         setStreakEvent(correct ? 'up' : 'break');
         setTimeout(() => setStreakEvent(null), 700);
 
-        updateCompletedChallenges(correct, xpAward, newStreak);
+        await updateCompletedChallenges(correct, xpAward, newStreak);
         setFeedback(correct ? "Correct!" : `Nope. The answer was ${currentChallengeData.factual}`); //use emojis to give ppl dopamine or punish their naughty behavior
         setFeedbackKey(k => k + 1);
         console.log(correct ? "Correct!" : `Nope. The answer was ${currentChallengeData.factual}`);
@@ -163,8 +185,8 @@ function BinaryGame({ user }) {
             <main className={styles.binaryMain}>
                 <div className={styles.question}>
                     <h1 className={styles.questionStatement}>True or False?</h1>
-                    <p className={styles.questionLevel}>
-                        {currentChallengeData?.level != null ? `Level ${currentChallengeData.level}` : "Level ?"}
+                    <p className={`${styles.questionLevel} ${levelUp ? styles.levelUp : ''}`}>
+                        Level {level}
                     </p>
                     <EyeLogo size={64} className="eye-hero" animated={true} />
                     <div className={styles.statusRow}>

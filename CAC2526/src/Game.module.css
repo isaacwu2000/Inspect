@@ -96,8 +96,14 @@
     font-size: 16px;
     color: #555;
     margin-bottom: 12px;
+    transition: transform 0.25s ease, text-shadow 0.25s ease, color 0.25s ease;
 }
 
+.levelUp {
+    transform: scale(1.08);
+    color: #0f7d73;
+    text-shadow: 0 0 12px rgba(16, 125, 115, 0.35);
+}
 .challengeGrid {
     width: 100%;
     display: flex;
