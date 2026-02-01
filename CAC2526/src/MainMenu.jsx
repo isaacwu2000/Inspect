@@ -8,7 +8,7 @@ function MainMenu({ user }) {
         <>
             <NavBar mode="authed" user={user} />
             <main className={styles.menu}>
-                <h1 style={{marginTop:0, textAlign:'center'}}>
+                <h1 style={{margin:'0 0 12px 0', textAlign:'center'}}>
                     Greetings {user?.displayName || "there"}, please select a mode:
                 </h1>
 

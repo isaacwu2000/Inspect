@@ -14,6 +14,18 @@ function BinaryGame({ user }) {
     const [xpGain, setXpGain] = useState(0);
     const [streakEvent, setStreakEvent] = useState(null);
 
+    // lock scrolling while on this page
+    useEffect(() => {
+        const prevBodyOverflow = document.body.style.overflow;
+        const prevDocOverflow = document.documentElement.style.overflow;
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = prevBodyOverflow;
+            document.documentElement.style.overflow = prevDocOverflow;
+        };
+    }, []);
+
     async function ensureUserExists() {
         const userRef = doc(db, "users", user.uid);
         const snap = await getDoc(userRef);
@@ -119,7 +131,7 @@ function BinaryGame({ user }) {
     return (
         <>
             <NavBar mode="authed" user={user} />
-            <main>
+            <main className={styles.binaryMain}>
                 <div className={styles.question}>
                     <h1 className={styles.questionStatement}>True or False?</h1>
                     <p className={styles.questionLevel}>
