@@ -20,6 +20,8 @@ function BinaryGame({ user }) {
     const [level, setLevel] = useState(1);
     const [levelUp, setLevelUp] = useState(false);
     const seenRef = useRef(new Set());
+    const [videoSrc, setVideoSrc] = useState('');
+    const videoUrlRef = useRef(null);
 
     // lock scrolling only while this screen is mounted
     useEffect(() => {
@@ -78,12 +80,20 @@ function BinaryGame({ user }) {
     }
 
     async function loadVideo(videoURL) {
-        // fix, TODO: URL.revokeObjectURL(uri);
-
-        const videoRef = ref(storage, videoURL)
+        // revoke old URL
+        if (videoUrlRef.current) {
+            URL.revokeObjectURL(videoUrlRef.current);
+            videoUrlRef.current = null;
+        }
+        if (!videoURL) {
+            setVideoSrc('');
+            return;
+        }
+        const videoRef = ref(storage, videoURL);
         const blob = await getBlob(videoRef);
-        const video = document.getElementById("videoPlayer");
-        video.src = URL.createObjectURL(blob);
+        const objUrl = URL.createObjectURL(blob);
+        videoUrlRef.current = objUrl;
+        setVideoSrc(objUrl);
     }
 
     function clearNextTimer() {
@@ -131,7 +141,7 @@ function BinaryGame({ user }) {
         seen.add(challengeSnap.id);
 
         const challengeData = challengeSnap.data();
-        loadVideo(challengeData.videoURL);
+        await loadVideo(challengeData.videoURL);
         setCurrentChallengeData(challengeData);
         setCurrentChallengeId(challengeSnap.id);
     }
@@ -204,7 +214,7 @@ function BinaryGame({ user }) {
 
                 <div className={`${styles.singleCardWrapper} ${highlightStyle}`}>
                     <div className={styles.singleCard}>
-                        <video id="videoPlayer" controls loop></video>
+                        <video id="videoPlayer" controls loop src={videoSrc}></video>
                         <p className={styles.singlePrompt}>
                             {currentChallengeData?.text != null ? currentChallengeData.text : "No challenge available."}
                         </p>

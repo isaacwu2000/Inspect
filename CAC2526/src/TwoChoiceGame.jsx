@@ -17,6 +17,9 @@ function TwoChoiceGame({ user }){
     const [answerLocked, setAnswerLocked] = useState(false);
     const nextTimerRef = useRef(null);
     const [feedbackKey, setFeedbackKey] = useState(0);
+    const seenRef = useRef(new Set());
+    const [videoSrcs, setVideoSrcs] = useState(["",""]);
+    const videoUrlRefs = useRef([null,null]);
 
     // lock scrolling while this screen is mounted
     useEffect(() => {
@@ -54,26 +57,21 @@ function TwoChoiceGame({ user }){
         return completed;
     }
 
-    async function loadVideos(videoURLTrue, videoURLFalse) {
-        // fix, TODO: URL.revokeObjectURL(uri);
-        //await options
-        const videoRefTrue = ref(storage, videoURLTrue)
-        const videoRefFalse = ref(storage, videoURLFalse)
-        const blobTrue = await getBlob(videoRefTrue);
-        const blobFalse = await getBlob(videoRefFalse);
-
-        let videoElementTrue;
-        let videoElementFalse;
-        if (falseIndex == 1) {
-            videoElementTrue = document.getElementById("videoPlayer0");
-            videoElementFalse = document.getElementById("videoPlayer1");
-        } else {
-            videoElementTrue = document.getElementById("videoPlayer0");
-            videoElementFalse = document.getElementById("videoPlayer1");
-        }
-
-        videoElementTrue.src = URL.createObjectURL(blobTrue);
-        videoElementFalse.src = URL.createObjectURL(blobFalse);
+    async function loadVideos(videoURLs) {
+        // videoURLs is [urlForOption0, urlForOption1] matching current option order
+        const blobs = await Promise.all(videoURLs.map(async (url, idx) => {
+            if (videoUrlRefs.current[idx]) {
+                URL.revokeObjectURL(videoUrlRefs.current[idx]);
+                videoUrlRefs.current[idx] = null;
+            }
+            if (!url) return "";
+            const storageRef = ref(storage, url);
+            const blob = await getBlob(storageRef);
+            const objUrl = URL.createObjectURL(blob);
+            videoUrlRefs.current[idx] = objUrl;
+            return objUrl;
+        }));
+        setVideoSrcs(blobs);
     }
 
     async function pickNextChallenge() {
@@ -120,8 +118,8 @@ function TwoChoiceGame({ user }){
     // Shuffle two options but make sure that we remember which one is false.
     async function prepareOptions(data) {
         const pair = [
-            { text: data.optionTrue, isFalse: false },
-            { text: data.optionFalse, isFalse: true }
+            { text: data.optionTrue, isFalse: false, video: data.videoTrue },
+            { text: data.optionFalse, isFalse: true, video: data.videoFalse }
         ];
 
         //Shuffel time!!!!
@@ -129,11 +127,12 @@ function TwoChoiceGame({ user }){
 
         const texts = pair.map(p => p.text);
         const idxFalse = pair.findIndex(p => p.isFalse === true);
+        const videosOrdered = pair.map(p => p.video);
 
         setOptions(texts);
         setFalseIndex(idxFalse);
 
-        await loadVideos(data.videoTrue, data.videoFalse)
+        await loadVideos(videosOrdered);
     }
 
     //load first challenge on mount (hi Isaac, see look i did it!)
@@ -234,7 +233,7 @@ function TwoChoiceGame({ user }){
                         }
                         return (
                             <div key={idx} className={`${styles.challengeOption} ${extraClass}`}>
-                                <video id={`videoPlayer${idx}`} controls loop></video>
+                                <video id={`videoPlayer${idx}`} controls loop src={videoSrcs[idx] || ""}></video>
                                 <p className={styles.challengeText}>{optText}</p>
                                 <button className={styles.challengeBtn} onClick={() => handleAnswer(idx)}>
                                     {idx === 0 ? "This one!" : "No, this one!"}

@@ -106,17 +106,13 @@
 }
 .challengeGrid {
     width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 18px;
     align-items: stretch;
-    justify-content: space-between;
 }
 
 .challengeOption {
-    flex: 1 1 40%;
-    min-width: 280px;
-
     border: 1px solid black;
     border-radius: 20px;
     box-shadow: 0px 1px 1.6px #2c2c2c;
@@ -146,10 +142,11 @@
 .challengeText {
     margin: 0;
     user-select: none;
-    font-size: 18px;
+    font-size: 17px;
     line-height: 1.4;
     text-align: center;
     white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .challengeBtn {
