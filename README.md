@@ -1,4 +1,7 @@
 # Inspect
+
+[2025 Congressional App Challenge Winning Project for Rep. Stephen Lynch](https://www.congressionalappchallenge.us/25-ma08/)
+
 ## App Description
 Through interactive gameplay that mirrors real internet content, Inspect teaches users how to detect AI-generated disinformation. 
 
