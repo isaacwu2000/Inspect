@@ -57,7 +57,6 @@ function Landing({ isLoggedIn, user }){
                 <section className={`${styles.section} ${styles.hero}`}>
                     <div className={styles.heroGrid}>
                         <div className={styles.heroCopy}>
-                            <p className={styles.kicker}>Build your fact-checking reflex</p>
                             <h1 className={styles.heroTitle}>
                                 Learn to separate <u>truth</u> from disinformation
                             </h1>
@@ -65,24 +64,13 @@ function Landing({ isLoggedIn, user }){
                                 Train with real headlines and AI-generated hoaxes.
                                 Quick rounds, instant receipts, and feedback that sticks.
                             </p>
-                            <div className={styles.ctaRow}>
-                                <button onClick={handleSignIn} className={styles.googleBtn}>
-                                    <img className={styles.googleLogo} src={googleLogo} alt="Google logo"/>
-                                    <span>Sign in with Google</span>
-                                </button>
-                                <a className={styles.secondaryBtn} href="#modes" onClick={scrollToModes}>
-                                    Preview the modes
-                                </a>
-                            </div>
                         </div>
-
-                        <div className={styles.heroCard}>
-                            <EyeLogo size={96} animated={true} />
-                            <ul className={styles.heroList}>
-                                <li>Short, swipeable questions</li>
-                                <li>Real-world political, health, and tech topics</li>
-                                <li>No data sales — only practice streaks</li>
-                            </ul>
+                         <EyeLogo size={128} animated={true} />
+                        <div className={styles.ctaRow}>
+                            <button onClick={handleSignIn} className={styles.googleBtn}>
+                                <img className={styles.googleLogo} src={googleLogo} alt="Google logo"/>
+                                <span>Sign in with Google</span>
+                            </button>
                         </div>
                     </div>
                 </section>
@@ -96,20 +84,20 @@ function Landing({ isLoggedIn, user }){
                         <div className={styles.card}>
                             <h3>True or False?</h3>
                             <p>
-                                Face a single claim and decide if it's legit or fabricated.
-                                Perfect for sharpening gut checks against viral posts.
+                                Is the headline real? Carefully verify and consider the possibilities!
                             </p>
                         </div>
                         <div className={styles.card}>
                             <h3>Which one?</h3>
                             <p>
-                                Two statements enter, one is real. Compare phrasing, numbers, and tone to spot the fake.
+                                Which political statement is more extreme right now?
+                                Compare tone and statistics to detect polarization.
                             </p>
                         </div>
                     </div>
                 </section>
 
-                <section className={`${styles.section} ${styles.band}`}>
+                <section className={`${styles.section}`}>
                     <h2>How Inspect works</h2>
                     <div className={styles.stepGrid}>
                         {steps.map((step, idx) => (
@@ -133,14 +121,14 @@ function Landing({ isLoggedIn, user }){
 
                 <section className={`${styles.section} ${styles.accentPanel}`}>
                     <h2>Who we are</h2>
-                    <p className={styles.sectionLead}>
+                    <p className={styles.aboutUs}>
                         We're Isaac and Santi, two high-school sophomores from Massachusetts.
                         We built Inspect because AI-generated misinformation is everywhere —
                         and we want everyone to recognize it at a glance.
                     </p>
                 </section>
 
-                <section className={`${styles.section} ${styles.band}`}>
+                <section className={`${styles.section}`}>
                     <h2>Acknowledgements</h2>
                     <p className={styles.sectionLead}>
                         Huge thanks to the <a target="_blank" href="https://www.flintk12.com/">Flint</a> team for sponsoring API credits,
@@ -159,9 +147,6 @@ function Landing({ isLoggedIn, user }){
                             <img className={styles.googleLogo} src={googleLogo} alt="Google logo"/>
                             <span>Sign in with Google</span>
                         </button>
-                        <a className={styles.secondaryBtn} href="#modes" onClick={scrollToModes}>
-                            See the modes first
-                        </a>
                     </div>
                 </section>
             </main>

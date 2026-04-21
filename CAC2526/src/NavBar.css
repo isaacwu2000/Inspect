@@ -6,13 +6,16 @@
 
     z-index: 1000;
     width: 100%;
-    background-color: rgba(239,239,239,0.8);
+    background-color: rgba(239,239,239,0.5);
     backdrop-filter: blur(8px);
 
     border-bottom: 1.6px solid black;
 
     /*Santi: removed flex because it was causing issues with the items clipping off on the right side of the screen*/
     padding: 16px 0;
+    display: flex;
+    justify-content: space-between;
+
 }
 
 /*Santo: centers and constrains items to the center of the navbar:*/
@@ -24,24 +27,26 @@
     display: flex;
     align-items: center;
     gap: 12px;
-
-    /*Santi: Allow wrapping for smaller screens only: */
-    flex-wrap: wrap;
-    row-gap: 8px;
+    flex-wrap: nowrap;
 }
 
 .brand {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 8px;
     text-decoration: none;
     color: var(--textColor);
     font-weight: 400;
     font-size: 20px;
+    width: fit-content;
+    min-width: 0;
 
-    /*Santi: take leftover space so buttons sit to the right*/
+    /*
+    //Santi: take leftover space so buttons sit to the right
     flex: 1 1 auto;
     min-width: 0;
+    */
 }
 
 .brandText {
@@ -52,7 +57,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    flex: 1 1 auto;
+    margin-left: auto;
     min-width: 0;
     flex-wrap: wrap;
     justify-content: flex-end;
@@ -127,15 +132,17 @@
 @media (max-width: 640px) {
     .navbarInner {
         padding: 0 20px;
+        flex-wrap: wrap;
+        row-gap: 10px;
     }
 
     .brand {
-        flex: 1 1 100%;
-        justify-content: space-between;
+        flex: 0 0 auto;
     }
 
     .navActions {
         width: 100%;
+        margin-left: 0;
         justify-content: flex-start;
         gap: 8px;
     }
