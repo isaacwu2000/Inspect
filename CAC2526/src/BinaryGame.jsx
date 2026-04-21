@@ -3,11 +3,12 @@ import styles from './Game.module.css';
 import NavBar from './NavBar.jsx';
 import EyeLogo from './EyeLogo.jsx';
 
-import { db, storage, ref, getBlob, doc, getDoc, setDoc, updateDoc, collection, getDocs, query, orderBy, where, increment } from './main.jsx';
+import { db, storage, ref, getBlob, doc, setDoc, collection, getDocs, query, orderBy, where, increment } from './firebase.js';
 
 function BinaryGame({ user }) {
     const [currentChallengeData, setCurrentChallengeData] = useState(null);
     const [currentChallengeId, setCurrentChallengeId] = useState(null);
+    const [isChallengeLoading, setIsChallengeLoading] = useState(true);
     const [feedback, setFeedback] = useState("");
     const [highlightStyle, setHighlightStyle] = useState("");
     const [streak, setStreak] = useState(0);
@@ -20,7 +21,7 @@ function BinaryGame({ user }) {
     const [level, setLevel] = useState(1);
     const [levelUp, setLevelUp] = useState(false);
     const seenRef = useRef(new Set());
-    const [videoSrc, setVideoSrc] = useState('');
+    const [videoSrc, setVideoSrc] = useState(null);
     const videoUrlRef = useRef(null);
 
     // lock scrolling only while this screen is mounted
@@ -34,30 +35,6 @@ function BinaryGame({ user }) {
             document.documentElement.style.overflow = prevDocOverflow;
         };
     }, []);
-
-    async function ensureUserExists() {
-        const userRef = doc(db, "users", user.uid);
-        const snap = await getDoc(userRef);
-        if (!snap.exists()) {
-            await setDoc(userRef, {
-                displayName: user.displayName,
-                email: user.email,
-                xp: 0,
-                answers: 0
-            }, { merge: true });
-        }
-    }
-
-    async function getCompletedChallenges() {
-        await ensureUserExists();
-        const completed = [];
-        const completedRef = collection(db, "users", user.uid, "completedChallenges");
-        const completedSnap = await getDocs(completedRef);
-        completedSnap.forEach((d) => {
-            completed.push(d.id);
-        });
-        return completed;
-    }
 
     async function updateCompletedChallenges(wasCorrect = true, xpAward = 0, streakVal = 0) {
         await setDoc(doc(db, "users", user.uid, "completedChallenges", currentChallengeId),{
@@ -80,20 +57,22 @@ function BinaryGame({ user }) {
     }
 
     async function loadVideo(videoURL) {
-        // revoke old URL
-        if (videoUrlRef.current) {
-            URL.revokeObjectURL(videoUrlRef.current);
-            videoUrlRef.current = null;
-        }
-        if (!videoURL) {
-            setVideoSrc('');
-            return;
-        }
+        clearVideo();
+        if (!videoURL) return;
+
         const videoRef = ref(storage, videoURL);
         const blob = await getBlob(videoRef);
         const objUrl = URL.createObjectURL(blob);
         videoUrlRef.current = objUrl;
         setVideoSrc(objUrl);
+    }
+
+    function clearVideo() {
+        if (videoUrlRef.current) {
+            URL.revokeObjectURL(videoUrlRef.current);
+            videoUrlRef.current = null;
+        }
+        setVideoSrc(null);
     }
 
     function clearNextTimer() {
@@ -105,6 +84,7 @@ function BinaryGame({ user }) {
 
     async function loadChallenge() {
         clearNextTimer();
+        setIsChallengeLoading(true);
         setAnswerLocked(false);
         setXpGain(0);
         setStreakEvent(null);
@@ -117,6 +97,7 @@ function BinaryGame({ user }) {
         if (snap.empty) {
             setCurrentChallengeData(null);
             setCurrentChallengeId(null);
+            setIsChallengeLoading(false);
             return;
         }
 
@@ -134,6 +115,7 @@ function BinaryGame({ user }) {
         if (pool.length === 0) {
             setCurrentChallengeData(null);
             setCurrentChallengeId(null);
+            setIsChallengeLoading(false);
             return;
         }
 
@@ -144,6 +126,7 @@ function BinaryGame({ user }) {
         await loadVideo(challengeData.videoURL);
         setCurrentChallengeData(challengeData);
         setCurrentChallengeId(challengeSnap.id);
+        setIsChallengeLoading(false);
     }
 
     useEffect(() => {loadChallenge();}, []);
@@ -155,6 +138,12 @@ function BinaryGame({ user }) {
         if (!currentChallengeData) return;
 
         const correct = (guessIsReal === currentChallengeData.factual);
+        if (!correct) {
+            clearVideo();
+            setCurrentChallengeData(null);
+            setIsChallengeLoading(true);
+        }
+
         const newStreak = correct ? streak + 1 : 0;
         setStreak(newStreak);
 
@@ -214,9 +203,15 @@ function BinaryGame({ user }) {
 
                 <div className={`${styles.singleCardWrapper} ${highlightStyle}`}>
                     <div className={styles.singleCard}>
-                        <video id="videoPlayer" controls loop src={videoSrc}></video>
+                        {videoSrc ? (
+                            <video id="videoPlayer" controls loop src={videoSrc}></video>
+                        ) : (
+                            <div className={styles.videoPlaceholder}>Loading video…</div>
+                        )}
                         <p className={styles.singlePrompt}>
-                            {currentChallengeData?.text != null ? currentChallengeData.text : "No challenge available."}
+                            {currentChallengeData?.text != null
+                                ? currentChallengeData.text
+                                : isChallengeLoading ? "Loading challenge…" : "No challenge available."}
                         </p>
 
                         <div className={styles.binaryBtnRow}>

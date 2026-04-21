@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import NavBar from './NavBar.jsx';
 import EyeLogo from './EyeLogo.jsx';
+import ProfileAvatar from './ProfileAvatar.jsx';
 import styles from './Profile.module.css';
-import { db, doc, getDoc, setDoc } from './main.jsx';
+import { db, doc, getDoc, setDoc } from './firebase.js';
 
 const LEVELS = [
   { xp: 0, title: "Amateur Identifier" },
@@ -25,7 +26,6 @@ function getLevel(xp = 0) {
 
 function Profile({ user }) {
   const [profile, setProfile] = useState({ xp: 0, answers: 0 });
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadProfile() {
@@ -43,7 +43,6 @@ function Profile({ user }) {
         });
         setProfile({ xp: 0, answers: 0 });
       }
-      setLoading(false);
     }
     loadProfile();
   }, [user]);
@@ -57,11 +56,12 @@ function Profile({ user }) {
       <main className={styles.profileMain}>
         <section className={styles.headerCard}>
           <div className={styles.avatarWrap}>
-            {user?.photoURL ? (
-              <img src={user.photoURL} className={styles.avatar} alt="Profile" />
-            ) : (
-              <div className={styles.avatarFallback}>{user?.displayName?.[0]?.toUpperCase() || "?"}</div>
-            )}
+            <ProfileAvatar
+              user={user}
+              imageClassName={styles.avatar}
+              fallbackClassName={styles.avatarFallback}
+              fallbackAriaLabel={`${user?.displayName || "Anonymous"} profile avatar`}
+            />
           </div>
           <div className={styles.headerCopy}>
             <p className={styles.kicker}>Your profile</p>

@@ -107,7 +107,7 @@
 .challengeGrid {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
     gap: 20px;
     align-items: stretch;
 }
@@ -144,9 +144,10 @@
     user-select: none;
     font-size: clamp(15px, 1.05vw, 18px);
     line-height: 1.4;
-    text-align: center;
+    text-align: left;
     white-space: pre-wrap;
     word-break: break-word;
+    width: 100%;
 }
 
 .challengeBtn {
@@ -256,13 +257,30 @@ video {
     object-fit: contain;
 }
 
+.videoPlaceholder {
+    width: min(100%, 420px);
+    aspect-ratio: 16 / 9;
+    display: grid;
+    place-items: center;
+    align-self: center;
+    margin-bottom: 16px;
+    border-radius: 18px;
+    border: 1px solid #d9e4e2;
+    background:
+        radial-gradient(circle at 34% 24%, rgba(29,169,155,0.16), transparent 34%),
+        linear-gradient(135deg, #f7fbfa, #edf4f2);
+    color: #4f5b59;
+    font-size: 16px;
+}
+
 .singlePrompt {
     margin: 0px 0px 24px 0px;
     font-size: 20px;
     line-height: 1.4;
     white-space: pre-wrap;
     user-select: none;
-    text-align: center;
+    text-align: left;
+    width: 100%;
 }
 
 .binaryBtnRow {
@@ -301,4 +319,24 @@ video {
     box-sizing: border-box;
     background: none;
     border-radius: 0;
+}
+
+@media (max-width: 520px) {
+    .challengeGrid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .challengeOption,
+    .singleCard {
+        padding: 14px 16px 18px 16px;
+    }
+
+    .singlePrompt {
+        font-size: 18px;
+    }
+
+    .binaryBtnRow {
+        gap: 16px;
+    }
 }

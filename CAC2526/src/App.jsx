@@ -7,7 +7,7 @@ import TwoChoiceGame from './TwoChoiceGame.jsx'
 import BinaryGame from './BinaryGame.jsx'
 import Profile from './Profile.jsx'
 
-import { auth, onAuthStateChanged } from './main.jsx'
+import { auth, onAuthStateChanged } from './firebase.js'
 
 //Not allowed to see certain stuff if ur not logged in
 function ProtectedRoute({ isLoggedIn, children }) {

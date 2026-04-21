@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import googleLogo from '/src/assets/google.svg';
 import NavBar from './NavBar.jsx';
 import EyeLogo from './EyeLogo.jsx';
-import { signInWithPopup, auth, provider } from './main.jsx';
+import { signInWithPopup, auth, provider } from './firebase.js';
 import styles from './Landing.module.css';
 
 function Landing({ isLoggedIn, user }){
@@ -15,17 +15,6 @@ function Landing({ isLoggedIn, user }){
 
     async function handleSignIn() {
         await signInWithPopup(auth, provider);
-    }
-
-    function scrollToModes(e) {
-        e.preventDefault();
-        if (!modesRef.current) return;
-        const rect = modesRef.current.getBoundingClientRect();
-        const target = rect.top + window.scrollY - (window.innerHeight - rect.height) / 2;
-        window.scrollTo({
-            top: Math.max(target, 0),
-            behavior: 'smooth'
-        });
     }
 
     const steps = [

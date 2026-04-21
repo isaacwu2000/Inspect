@@ -2,7 +2,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import styles from './Game.module.css';
 import NavBar from './NavBar.jsx';
 import EyeLogo from './EyeLogo.jsx';
-import { auth, db, signOut, storage, ref, getBlob, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, increment } from './main.jsx';
+import { db, storage, ref, getBlob, collection, doc, setDoc, getDocs, query, where, orderBy, increment } from './firebase.js';
 
 function TwoChoiceGame({ user }){
     const [currentChallengeId, setCurrentChallengeId] = useState(null);
@@ -20,67 +20,53 @@ function TwoChoiceGame({ user }){
     const seenRef = useRef(new Set());
     const [videoSrcs, setVideoSrcs] = useState([null,null]);
     const videoUrlRefs = useRef([null,null]);
+    const videoLoadTokenRef = useRef(0);
     const [answeredCount, setAnsweredCount] = useState(0);
     const [level, setLevel] = useState(1);
     const [levelUp, setLevelUp] = useState(false);
-
-    // lock scrolling while this screen is mounted
-    useEffect(() => {
-        const prevBodyOverflow = document.body.style.overflow;
-        const prevDocOverflow = document.documentElement.style.overflow;
-        document.body.style.overflow = 'hidden';
-        document.documentElement.style.overflow = 'hidden';
-        return () => {
-            document.body.style.overflow = prevBodyOverflow;
-            document.documentElement.style.overflow = prevDocOverflow;
-        };
-    }, []);
-
-    async function ensureUserExists() {
-        const userRef = doc(db, "users", user.uid);
-        const snap = await getDoc(userRef);
-        if (!snap.exists()) {
-            await setDoc(userRef, {
-                displayName: user.displayName,
-                email: user.email,
-                xp: 0,
-                answers: 0
-            }, { merge: true });
-        }
-    }
-
-    async function getCompletedChallenges() {
-        await ensureUserExists();
-        const completed = [];
-        const completedRef = collection(db, "users", user.uid, "completedChallenges");
-        const completedSnap = await getDocs(completedRef);
-        completedSnap.forEach((d) => {
-            completed.push(d.id);
-        });
-        return completed;
-    }
+    const visibleOptions = options.length > 0 ? options : [null, null];
 
     async function loadVideos(videoURLs) {
         // videoURLs is [urlForOption0, urlForOption1] matching current option order
-        const blobs = await Promise.all(videoURLs.map(async (url, idx) => {
-            if (videoUrlRefs.current[idx]) {
-                URL.revokeObjectURL(videoUrlRefs.current[idx]);
-                videoUrlRefs.current[idx] = null;
-            }
+        clearVideos();
+        const loadToken = videoLoadTokenRef.current;
+
+        const blobs = await Promise.all(videoURLs.map(async (url) => {
             if (!url) return null;
             const storageRef = ref(storage, url);
             const blob = await getBlob(storageRef);
             const objUrl = URL.createObjectURL(blob);
-            videoUrlRefs.current[idx] = objUrl;
             return objUrl;
         }));
+
+        if (loadToken !== videoLoadTokenRef.current) {
+            blobs.forEach((objUrl) => {
+                if (objUrl) URL.revokeObjectURL(objUrl);
+            });
+            return;
+        }
+
+        videoUrlRefs.current = blobs;
         setVideoSrcs(blobs);
+    }
+
+    function clearVideos() {
+        videoLoadTokenRef.current += 1;
+        videoUrlRefs.current.forEach((videoUrl, idx) => {
+            if (videoUrl) {
+                URL.revokeObjectURL(videoUrl);
+                videoUrlRefs.current[idx] = null;
+            }
+        });
+        setVideoSrcs([null, null]);
     }
 
     async function pickNextChallenge() {
         clearNextTimer();
         setAnswerLocked(false);
         setSelectedIdx(null);
+        setOptions([]);
+        setFalseIndex(null);
         setFeedback("");
         setXpGain(0);
         setStreakEvent(null);
@@ -162,6 +148,13 @@ function TwoChoiceGame({ user }){
 
         setSelectedIdx(idx);
         const correct = (idx === falseIndex);
+        if (!correct) {
+            clearVideos();
+            setOptions([]);
+            setFalseIndex(null);
+            setSelectedIdx(null);
+        }
+
         const newStreak = correct ? streak + 1 : 0;
         setStreak(newStreak);
 
@@ -238,7 +231,7 @@ function TwoChoiceGame({ user }){
                 </div>
 
                 <div className={styles.challengeGrid}>
-                    {options.map((optText, idx) => {
+                    {visibleOptions.map((optText, idx) => {
                         //make it satisfying to click and hover over:
                         let extraClass = "";
                         if (selectedIdx !== null && idx === selectedIdx) {
@@ -251,8 +244,8 @@ function TwoChoiceGame({ user }){
                                 ) : (
                                     <div className={styles.videoPlaceholder}>Loading video…</div>
                                 )}
-                                <p className={styles.challengeText}>{optText}</p>
-                                <button className={styles.challengeBtn} onClick={() => handleAnswer(idx)}>
+                                <p className={styles.challengeText}>{optText ?? "Loading challenge…"}</p>
+                                <button className={styles.challengeBtn} onClick={() => handleAnswer(idx)} disabled={optText == null}>
                                     {idx === 0 ? "This one!" : "No, this one!"}
                                 </button>
                             </div>

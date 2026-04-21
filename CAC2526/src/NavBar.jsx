@@ -2,7 +2,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import EyeLogo from './EyeLogo.jsx';
-import { signInWithPopup, signOut, auth, provider } from './main.jsx';
+import ProfileAvatar from './ProfileAvatar.jsx';
+import { signInWithPopup, signOut, auth, provider } from './firebase.js';
 import './NavBar.css';
 
 function NavBar({ mode, user }) {
@@ -41,14 +42,13 @@ function NavBar({ mode, user }) {
             <>
               <Link className="navLink" to="/menu">Menu</Link>
               <button className="navBtn" onClick={handleSignOut}>Sign out</button>
-              <Link className="profileBtn" to="/profile" title="Your profile">
-                {user?.photoURL ? (
-                  <img src={user.photoURL} alt="Profile" className="avatar"/>
-                ) : (
-                  <div className="avatar placeholder">
-                    {user?.displayName?.[0]?.toUpperCase() || "?"}
-                  </div>
-                )}
+              <Link className="profileBtn" to="/profile" title="Your profile" aria-label="Your profile">
+                <ProfileAvatar
+                  user={user}
+                  imageClassName="avatar"
+                  fallbackClassName="avatar placeholder"
+                  fallbackAriaHidden={true}
+                />
               </Link>
             </>
           )}
